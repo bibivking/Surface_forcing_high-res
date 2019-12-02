@@ -37,7 +37,7 @@ def main( fn , fld , LAT , LON , level , unit , long_name , description):
     transf = ds.GetGeoTransform()
     cols = ds.RasterXSize # 49200
     rows = ds.RasterYSize # 40800
-    bands = ds.RasterCount
+    #bands = ds.RasterCount
     #bandtype = gdal.GetDataTypeName(var.DataType) #Int16
     #driver = ds.GetDriver().LongName #'GeoTIFF'
     print(transf)
@@ -46,13 +46,13 @@ def main( fn , fld , LAT , LON , level , unit , long_name , description):
     print(lon)
     print(lat)
     # plot_spitial(var,lon,lat)
-
-    interpolate_to_5km_netcdf(fld , var , lat , lon , LAT , LON , level , unit , long_name , description)
+    grid_lat, grid_lon = np.meshgrid(lat,lon)
+    interpolate_to_5km_netcdf(fld , var , grid_lat, grid_lon , LAT , LON , level , unit , long_name , description)
 
     ds = None
 
 
-def interpolate_to_5km_netcdf(fld , var , lat , lon , LAT , LON, level , unit , long_name , description):
+def interpolate_to_5km_netcdf(fld , var , grid_lat, grid_lon , LAT , LON, level , unit , long_name , description):
 
     # create file and write global attributes
     out_fname = "%s_%s_AU_NAT_C.nc" %(fld, level)
@@ -84,10 +84,19 @@ def interpolate_to_5km_netcdf(fld , var , lat , lon , LAT , LON, level , unit , 
 
     Var = -9999.
     var[var == -9999.0] = np.nan
+    #a = np.zeros((grid_lat.shape), dtype=bool)
+    #b = np.zeros((grid_lat.shape), dtype=bool)
     for i in np.arange(0,len(LAT)):
         for j in np.arange(0,len(LON)):
-            Var[i,j] = var[{LAT(i)-0.025:LAT(i)+0.025},{LON(j)-0.025:LON(j)+0.025}].nanmean
-
+            a = grid_lat[:,:] >= LAT[i]-0.025
+            b = grid_lat[:,:] < LAT[i]+0.025
+            c = grid_lon[:,:] >= LON[i]-0.025
+            d = grid_lon[:,:] < LON[i]+0.025
+            abc = [a,b,c,d]
+            print(abc)
+            #print(abc.shape)
+            Var[i,j] = var[np.all(abc, axis=2)].nanmean
+            print(var[a and b])
     f.close()
 
 def plot_spitial(var,lon,lat):
@@ -132,12 +141,12 @@ if __name__ == "__main__":
     # read AWAP latitude and longitude
     fcable = "/srv/ccrc/data25/z5218916/data/AWAP_to_netcdf/Wind/AWAP.Wind.3hr.2000.nc"
     cable = nc.Dataset(fcable, 'r')
-    LAT   = pd.DataFrame(cable.variables['lat'][:], columns =['lat']).to_numpy()
-    LON   = pd.DataFrame(cable.variables['lon'][:], columns =['lon']).to_numpy()
+    LAT   = pd.DataFrame(cable.variables['lat'][:], columns =['lat']).to_numpy().flatten()
+    LON   = pd.DataFrame(cable.variables['lon'][:], columns =['lon']).to_numpy().flatten()
     fcable = None
     cable  = None
-    print(LAT)
-    print(LON)
+    print(LAT.shape)
+    print(LON.shape)
 
     for fld in folder:
         if fld == 'Bulk_density':
@@ -168,10 +177,3 @@ if __name__ == "__main__":
             level = "%s-%s" %(os.path.basename(fn).split("/")[-1].split("_")[1],os.path.basename(fn).split("/")[-1].split("_")[2])
             print(level)
             main(fn,fld,LAT,LON,level,unit,long_name,description)
-
-
-'''
-        if
-        site = os.path.basename(fname).split(".")[0].split("_")[0]
-                co2_conc = os.path.basename(fname).split(".")[0].split("_")[2]
-'''
