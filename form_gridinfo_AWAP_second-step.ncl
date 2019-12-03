@@ -33,16 +33,18 @@ lat_e = -10.
 lon_s = 112.
 lon_e = 154.
 
-nlat   = 681 ;
+nlat   = 681
 nlon   = 841
-ntime  = 12 ;
-nsoil  = 6 ;
-npatch = 1 ;
-nrad   = 3 ;
+ntime  = 12
+nsoil  = 6
+npatch = 1
+nrad   = 3
 nsdepth = 6
 
+soil_depth= (/0.011,0.051,0.157,0.4385,1.1855,3.164/)
+latitude  = fspan( lat_s, lat_e, nlat)
+longitude = fspan( lon_s, lon_e, nlon)
 ; ----------------- 3D --------------------
-
 
 ; =======  LAI  ========
 ; use Mark's gridinfo file to fill default value in Martin's LAI file
@@ -54,7 +56,7 @@ filevardef( finout, "LAI", "float", (/"time", "latitude", "longitude" /))
 ;LAI&latitude  = fspan( lat_s, lat_e, nlat)
 ;LAI&longitude = fspan( lon_s, lon_e, nlon)
 LAI = fLAI->LAI
-lai = new((/ntime, nlat, nlon/),  "float")
+lai = new((/ntime, nlat, nlon/),  float)
 
 do x = lat_s+0.25,lat_e-0.25,0.5
   do y = lon_s+0.25,lon_e-0.25,0.5
@@ -71,12 +73,13 @@ finout->LAI               = LAI*1.0
 delete(LAI)
 delete(lai)
 
+; =======  SOIL  ========
+rhosoil_temp = new((/nsdepth, nlat, nlon/), float)
+sand_temp    = new((/nsdepth, nlat, nlon/), float)
+clay_temp    = new((/nsdepth, nlat, nlon/), float)
+silt_temp    = new((/nsdepth, nlat, nlon/), float)
+organic_temp = new((/nsdepth, nlat, nlon/), float)
 
-rhosoil = new((/ntime, nlat, nlon/),  "float")
-sand    = new((/ntime, nlat, nlon/),  "float")
-clay    = new((/ntime, nlat, nlon/),  "float")
-silt    = new((/ntime, nlat, nlon/),  "float")
-organic = new((/ntime, nlat, nlon/),  "float")
 level_class = (/"000_005","005_015","015_030","030_060","060_100","100_200"/)
 
 do level = 0,5
@@ -86,70 +89,164 @@ do level = 0,5
     fsilt = addfile("Silt_"+level_class(level)+"_AU_NAT_C.nc", "r")
     forg  = addfile("Organic_C_"+level_class(level)+"_AU_NAT_C.nc", "r")
 
-;change unit
-    rhosoil(level,:,:) = frho->Bulk_density*1.
-    sand(level,:,:)    = fsand->Sand*1.
-    clay(level,:,:)    = fclay->Clay*1.
-    silt(level,:,:)    = fsilt->Silt*1.
-    organic(level,:,:) = forg->Organic_C*1.
+    rhosoil_temp(level,:,:) = frho->Bulk_density*1000. ; g/cm3 -> kg/m3
+    sand_temp(level,:,:)    = fsand->Sand/100.         ; % -> m3/m3
+    clay_temp(level,:,:)    = fclay->Clay/100.
+    silt_temp(level,:,:)    = fsilt->Silt/100.
+    organic_temp(level,:,:) = forg->Organic_C/100.
 end do
 
-finout->rhosoil_vec(0,:,:) = rhosoil(0,:,:)
-finout->sand_vec(0,:,:)    = sand(0,:,:)
-finout->clay_vec(0,:,:)    = clay(0,:,:)
-finout->silt_vec(0,:,:)    = silt(0,:,:)
-finout->organic_vec(0,:,:) = organic(0,:,:)
+rhosoil_vec = new((/nsdepth, nlat, nlon/), float)
+sand_vec    = new((/nsdepth, nlat, nlon/), float)
+clay_vec    = new((/nsdepth, nlat, nlon/), float)
+silt_vec    = new((/nsdepth, nlat, nlon/), float)
+organic_vec = new((/nsdepth, nlat, nlon/), float)
+hyds_vec    = new((/nsdepth, nlat, nlon/), float)
+bch_vec     = new((/nsdepth, nlat, nlon/), float)
+sucs_vec    = new((/nsdepth, nlat, nlon/), float)
+ssat_vec    = new((/nsdepth, nlat, nlon/), float)
+swilt_vec   = new((/nsdepth, nlat, nlon/), float)
+sfc_vec     = new((/nsdepth, nlat, nlon/), float)
+css_vec     = new((/nsdepth, nlat, nlon/), float)
+watr        = new((/nsdepth, nlat, nlon/), float)
+cnsd        = new((/nsdepth, nlat, nlon/), float)
 
-finout->rhosoil_vec(1,:,:) = (rhosoil(0,:,:)*0.028 + rhosoil(1,:,:)*0.03)/0.058
-finout->sand_vec(1,:,:)    = (sand(0,:,:)*0.028 + sand(1,:,:)*0.03)/0.058
-finout->clay_vec(1,:,:)    = (clay(0,:,:)*0.028 + clay(1,:,:)*0.03)/0.058
-finout->silt_vec(1,:,:)    = (silt(0,:,:)*0.028 + silt(1,:,:)*0.03)/0.058
-finout->organic_vec(1,:,:) = (organic(0,:,:)*0.028 + organic(1,:,:)*0.03)/0.058
+rhosoil_vec(0,:,:) = rhosoil_temp(0,:,:)
+sand_vec(0,:,:)    = sand_temp(0,:,:)
+clay_vec(0,:,:)    = clay_temp(0,:,:)
+silt_vec(0,:,:)    = silt_temp(0,:,:)
+organic_vec(0,:,:) = organic_temp(0,:,:)
 
-finout->rhosoil_vec(2,:,:) = (rhosoil(1,:,:)*0.07 + rhosoil(2,:,:)*0.084)/0.154
-finout->sand_vec(2,:,:)    = (sand(1,:,:)*0.07 + sand(2,:,:)*0.084)/0.154
-finout->clay_vec(2,:,:)    = (clay(1,:,:)*0.07 + clay(2,:,:)*0.084)/0.154
-finout->silt_vec(2,:,:)    = (silt(1,:,:)*0.07 + silt(2,:,:)*0.084)/0.154
-finout->organic_vec(2,:,:) = (organic(1,:,:)*0.07 + organic(2,:,:)*0.084)/0.154
+rhosoil_vec(1,:,:) = (rhosoil_temp(0,:,:)*0.028 + rhosoil_temp(1,:,:)*0.03)/0.058
+sand_vec(1,:,:)    = (sand_temp(0,:,:)*0.028 + sand_temp(1,:,:)*0.03)/0.058
+clay_vec(1,:,:)    = (clay_temp(0,:,:)*0.028 + clay_temp(1,:,:)*0.03)/0.058
+silt_vec(1,:,:)    = (silt_temp(0,:,:)*0.028 + silt_temp(1,:,:)*0.03)/0.058
+organic_vec(1,:,:) = (organic_temp(0,:,:)*0.028 + organic_temp(1,:,:)*0.03)/0.058
 
-finout->rhosoil_vec(3,:,:) = (rhosoil(2,:,:)*0.066 + rhosoil(3,:,:)*0.3 + rhosoil(4,:,:)*0.043)/0.409
-finout->sand_vec(3,:,:)    = (sand(2,:,:)*0.066 + sand(3,:,:)*0.3 + sand(4,:,:)*0.043)/0.409
-finout->clay_vec(3,:,:)    = (clay(2,:,:)*0.066 + clay(3,:,:)*0.3 + clay(4,:,:)*0.043)/0.409
-finout->silt_vec(3,:,:)    = (silt(2,:,:)*0.066 + silt(3,:,:)*0.3 + silt(4,:,:)*0.043)/0.409
-finout->organic_vec(3,:,:) = (organic(2,:,:)*0.066 + organic(3,:,:)*0.3 + organic(4,:,:)*0.043)/0.409
+rhosoil_vec(2,:,:) = (rhosoil_temp(1,:,:)*0.07 + rhosoil_temp(2,:,:)*0.084)/0.154
+sand_vec(2,:,:)    = (sand_temp(1,:,:)*0.07 + sand_temp(2,:,:)*0.084)/0.154
+clay_vec(2,:,:)    = (clay_temp(1,:,:)*0.07 + clay_temp(2,:,:)*0.084)/0.154
+silt_vec(2,:,:)    = (silt_temp(1,:,:)*0.07 + silt_temp(2,:,:)*0.084)/0.154
+organic_vec(2,:,:) = (organic_temp(1,:,:)*0.07 + organic_temp(2,:,:)*0.084)/0.154
 
-finout->rhosoil_vec(4,:,:) = (rhosoil(4,:,:)*0.357 + rhosoil(4,:,:)*0.728)/1.085
-finout->sand_vec(4,:,:)    = (sand(4,:,:)*0.357 + sand(4,:,:)*0.728)/1.085
-finout->clay_vec(4,:,:)    = (clay(4,:,:)*0.357 + clay(4,:,:)*0.728)/1.085
-finout->silt_vec(4,:,:)    = (silt(4,:,:)*0.357 + silt(4,:,:)*0.728)/1.085
-finout->organic_vec(4,:,:) = (organic(4,:,:)*0.357 + organic(4,:,:)*0.728)/1.085
+rhosoil_vec(3,:,:) = (rhosoil_temp(2,:,:)*0.066 + rhosoil_temp(3,:,:)*0.3 + rhosoil_temp(4,:,:)*0.043)/0.409
+sand_vec(3,:,:)    = (sand_temp(2,:,:)*0.066 + sand_temp(3,:,:)*0.3 + sand_temp(4,:,:)*0.043)/0.409
+clay_vec(3,:,:)    = (clay_temp(2,:,:)*0.066 + clay_temp(3,:,:)*0.3 + clay_temp(4,:,:)*0.043)/0.409
+silt_vec(3,:,:)    = (silt_temp(2,:,:)*0.066 + silt_temp(3,:,:)*0.3 + silt_temp(4,:,:)*0.043)/0.409
+organic_vec(3,:,:) = (organic_temp(2,:,:)*0.066 + organic_temp(3,:,:)*0.3 + organic_temp(4,:,:)*0.043)/0.409
 
-finout->rhosoil_vec(5,:,:) = rhosoil(5,:,:)
-finout->sand_vec(5,:,:)    = sand(5,:,:)
-finout->clay_vec(5,:,:)    = clay(5,:,:)
-finout->silt_vec(5,:,:)    = silt(5,:,:)
-finout->organic_vec(5,:,:) = organic(5,:,:)
+rhosoil_vec(4,:,:) = (rhosoil_temp(4,:,:)*0.357 + rhosoil_temp(4,:,:)*0.728)/1.085
+sand_vec(4,:,:)    = (sand_temp(4,:,:)*0.357 + sand_temp(4,:,:)*0.728)/1.085
+clay_vec(4,:,:)    = (clay_temp(4,:,:)*0.357 + clay_temp(4,:,:)*0.728)/1.085
+silt_vec(4,:,:)    = (silt_temp(4,:,:)*0.357 + silt_temp(4,:,:)*0.728)/1.085
+organic_vec(4,:,:) = (organic_temp(4,:,:)*0.357 + organic_temp(4,:,:)*0.728)/1.085
 
+rhosoil_vec(5,:,:) = rhosoil_temp(5,:,:)
+sand_vec(5,:,:)    = sand_temp(5,:,:)
+clay_vec(5,:,:)    = clay_temp(5,:,:)
+silt_vec(5,:,:)    = silt_temp(5,:,:)
+organic_vec(5,:,:) = organic_temp(5,:,:)
 
-filevardef( finout, "rhosoil_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
-filevardef( finout, "sand_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
-filevardef( finout, "clay_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
-filevardef( finout, "silt_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
-filevardef( finout, "org_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
+; ________________________________ Mark Decker's equations for elev file ___________________________________
+; From /g/data1/w35/mrd561/CABLE2_runs/CMIP6-GM2-testing/ssgw_Feb23.2018/opt/surface_data/add_derived_SWC.py
 
-filevardef( finout, "bch_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
-filevardef( finout, "sucs_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
-filevardef( finout, "ssat_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
-filevardef( finout, "sfc_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
-filevardef( finout, "css_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
-filevardef( finout, "cnsd_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
-filevardef( finout, "hyds_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
-filevardef( finout, "watr", "float",     (/ "soil_depth", "latitude", "longitude" /))
+hyds_vec = (1.0-organic_vec) * 0.00706 * ( 10.0 ^ (-0.60 + 1.26*sand_vec - 0.64*clay_vec) ) + organic_vec*10^(-4)
+bch_vec  = (1.0-organic_vec) * ( 3.1 + 15.7*clay_vec - 0.3*sand_vec ) + organic_vec*3.0
+sucs_vec = (1.0-organic_vec) * 10.0 * 10.0^( 1.54 - 0.95*sand_vec + 0.63*silt_vec ) + organic_vec*10.3
+ssat_vec = (1.0-organic_vec) * ( 0.505 - 0.142*sand_vec - 0.037*clay_vec ) + organic_vec*0.6
+watr     = (1.0-organic_vec) * ( 0.02 + 0.018*clay_vec ) + organic_vec*0.15
 
+sst_tmp = ssat_vec
+sst_tmp = where(sst_tmp .gt. 0.85, 0.85, sst_tmp)
+sst_tmp = where(sst_tmp .lt. 0.15, 0.15, sst_tmp)
+sst_tmp = 1.0 - sst_tmp
 
+iveg    = finout->iveg
 
+psi_tmp = ssat
+psi_tmp = 2750000.
+psi_tmp = where( iveg .le. 3, 2550000.0, psi_tmp)
+psi_tmp = where( iveg .eq. 4, 2240000.0, psi_tmp)
+psi_tmp = where( iveg .eq. 5, 4280000.0, psi_tmp)
+do level = 0,5
+    swilt_vec(level,:,:) = (ssat_vec(level,:,:) - watr(level,:,:)) \
+                          * ((psi_tmp/sucs_vec(level,:,:)) ^ (-1.0/bch_vec(level,:,:)))\
+                          + watr(level,:,:)
+end do
+sfc_vec  = (ssat_vec - watr) * ( 1.157407 * 10^(-06) / hyds_vec) ^ (1.0 / (2.0*bch_vec + 3.0) ) + watr
+css  = (1.0-organic_vec) * ( 850*(1.0 - sand_vec - clay_vec) + 865.0*clay_vec + 750.0*sand_vec ) + organic_vec*950.0
+cnsd = (1.0-organic_vec) * ( 0.135*sst_tmp + 0.0239/sst_tmp )  / (1.0 - 0.947*sst_tmp) + organic_vec*0.05
 
+; __________________ Note that ! ___________________
+; Below are the soil properties for fully organic soil in
+; ./Marks_latest_branch_with_fixes/core/biogeophys/cable_common.F90
+; They are different from these parameters used in this script!
+;        hyds_vec = 1.0e-4,&
+;        sucs_vec = 10.3,   &
+;        bch_vec  = 2.91,     &
+;        ssat_vec = 0.9,    &
+;        watr     = 0.1,&
+;        css_vec  = 4000.0,&
+;        cnsd_vec = 0.1
 
+var_name = (/ "rhosoil_vec", "sand_vec", "clay_vec", "silt_vec", "org_vec", "bch_vec",\
+              "sucs_vec", "ssat_vec", "sfc_vec", "css_vec", "cnsd_vec", "hyds_vec",\
+              "watr", "cnsd" /)
+
+do var_num = 0,dimsizes(var_name)-1
+    filevardef(finout, var_name(var_num), "float", (/ "soil_depth", "latitude", "longitude" /))
+    finout->$var_name(var_num)$@_FillValue  = -9999.
+    finout->$var_name(var_num)$!0 = "soil_depth"
+    finout->$var_name(var_num)$!1 = "latitude"
+    finout->$var_name(var_num)$!2 = "longitude"
+    finout->$var_name(var_num)$&soil_depth = soil_depth
+    finout->$var_name(var_num)$&latitude   = latitude
+    finout->$var_name(var_num)$&longitude  = longitude
+    finout->$var_name(var_num)$@_FillValue = -9999.
+end do
+
+finout->rhosoil_vec = rhosoil_vec*1.
+finout->sand_vec    = sand_vec*1.
+finout->clay_vec    = clay_vec*1.
+finout->silt_vec    = silt_vec*1.
+finout->org_vec     = organic_vec*1.
+finout->hyds_vec    = hyds_vec*1.
+finout->bch_vec     = bch_vec*1.
+finout->sucs_vec    = sucs_vec*(-1.0)/1000. ; sucs should be positive value?? or negetive value?
+finout->ssat_vec    = ssat_vec*1.
+finout->swilt_vec   = swilt_vec*1.
+finout->sfc_vec     = sfc_vec*1.
+finout->css_vec     = css_vec*1.
+finout->watr        = watr*1.
+finout->cnsd        = cnsd*1.
+
+finout->rhosoil_vec@long_name = "Soil bulk density"
+finout->rhosoil_vec@units     = "kg/m3"
+finout->sand_vec@long_name    = "Sand fraction"
+finout->sand_vec@units        = "m3/m3"
+finout->clay_vec@long_name    = "Clay fraction"
+finout->clay_vec@units        = "m3/m3"
+finout->silt_vec@long_name    = "Silt fraction"
+finout->silt_vec@units        = "m3/m3"
+finout->org_vec@long_name     = "Organic carbon fraction"
+finout->org_vec@units         = "m3/m3"
+finout->hyds_vec@long_name    = "saturated soil conductivity"
+finout->hyds_vec@units        = "mm/s"
+finout->bch_vec@long_name     = "Clapp-Hornberger b coefficient"
+finout->sucs_vec@long_name    = "Saturated soil water suction"
+finout->sucs_vec@units        = "m" ; check it with original equation
+finout->ssat_vec@long_name    = "Volumetric soil moisture content at saturation"
+finout->ssat_vec@units        = "m3/m3"
+finout->swilt_vec@long_name   = "Volumetric soil moisture content at wilting point"
+finout->swilt_vec@units       = "m3/m3"
+finout->sfc_vec@long_name     = "Field capacity (volumetric soil moisture content at critical point)" ;
+finout->sfc_vec@units         = "m3/m3"
+finout->css_vec@long_name     = "Soil specific heat capacity" ;
+finout->css_vec@units         = "J/kg/K" ;
+finout->cnsd@long_name        = "Thermal conductivity"
+finout->cnsd@units            = "W/m/K" ;
+finout->watr@long_name        = "Residual water content of the soil"
+finout->watr@units            = "m3/m3"
 
 
 
@@ -170,159 +267,19 @@ filevardef( finout, "swilt", "float", (/ "latitude", "longitude" /))
 filevardef( finout, "css", "float", (/ "latitude", "longitude" /))
 filevardef( finout, "cnsd", "float", (/ "latitude", "longitude" /))
 
-filevardef( finout, "isoil", integer, (/ "latitude", "longitude" /)) ; Need to be calculated
+
+
+
+filevardef( finout, "isoil", "integer", (/ "latitude", "longitude" /)) ; Need to be calculated
 
 finout->isoil@long_name     = "Zobler soil type";
 finout->isoil@missing_value = -1
 
 ; ----------------- 3D --------------------
 
+fout->hyds   = hyds/1000.
+fout->sucs   = sucs*(-1.0)/1000.
 
-
-
-------------------------------------------------------
-
-
-nml_2D = (/\
-    "iveg", "landsea", "soil_color", "Albedo", "albedo2",   \
-    "Sy", "dtb", "drainage_density", "slope", "slope_std",  \
-    "elevation", "elevation_std", "permeability"            \
-    /)
-
-do var_num = 0, dimsizes(nml_2D)-1
-   print(nml_2D(var_num))
-   if var_num .eq. 0 then
-      var   = new((/nlat,nlon/),  "integer")
-   else
-      var   = new((/nlat,nlon/),  ""float"")
-   end if
-   var!0 = "latitude"
-   var!1 = "longitude"
-   var&latitude  = fspan( lat_s, lat_e, nlat)
-   var&longitude = fspan( lon_s, lon_e, nlon)
-   do x = lat_s+0.25,lat_e-0.25,0.5
-      do y = lon_s+0.25,lon_e-0.25,0.5
-        if var_num .eq. 0 then
-           var({x-0.25:x+0.25},{y-0.25:y+0.25}) = "float"tointeger(fgrid->$nml_2D(var_num)$({x},{y}))
-        else if var_num .le. 4 then
-           var({x-0.25:x+0.25},{y-0.25:y+0.25}) = fgrid->$nml_2D(var_num)$({x},{y})
-        else
-           var({x-0.25:x+0.25},{y-0.25:y+0.25}) = felev->$nml_2D(var_num)$({x},{y})
-        end if
-        end if
-      end do
-   end do
-   finout->$nml_2D(var_num)$ = var*1
-   delete(var)
-end do
-
-finout->iveg@long_name     = "CSIRO classification of veg type"
-finout->iveg@_FillValue = -1
-
-finout->landsea@units         = "0:land, 1:sea";
-finout->landsea@_FillValue = -9999.
-
-finout->landsea@_FillValue = -9999.
-
-finout->Albedo@long_name = "unknown sources" ;CSIRO std "ISLSCP2 snow-free bareground albedo";
-finout->Albedo@_FillValue = -1.0
-
-finout->Albedo@long_name = "unknown sources" ; CSIRO std "UM SNOW-FREE ALBEDO OF SOIL";
-finout->Albedo@_FillValue = -9999.
-
-finout->Sy@long_name = "saturated water content of the aquifer (GWssat_vec)"
-finout->Sy@units = "m3/m3";
-finout->Sy@_FillValue = -9999.
-
-finout->dtb@long_name = "depth to bedrock";
-finout->dtb@units = "m";
-finout->dtb@_FillValue = -9999.
-
-finout->drainage_density@long_name = "drainage density"
-finout->drainage_density@units = "1/m";
-finout->drainage_density@_FillValue = -9999.
-finout->drainage_density@filling_method = "missing values north of 60N filled by linearly regressing against soil texture, slope, dtb, top ind, source area";
-
-finout->slope@long_name = "mean slope";
-finout->slope@units = "m/m";
-finout->slope@_FillValue = -9999.
-
-finout->slope_std@long_name = "stddev of slope"
-finout->slope_std@units = "m/m";
-finout->slope_std@_FillValue = -9999.
-
-finout->elevation@long_name = "elevation above sea level"
-finout->elevation@units = "m";
-finout->elevation@_FillValue = -9999.
-
-finout->elevation_std@long_name = "stddev of elevation"
-finout->elevation_std@units = "m";
-finout->elevation_std@_FillValue = -9999.
-
-finout->permeability@long_name     = "saturated hydraulic conductivity of the aquifer"
-finout->permeability@units         = "mm/s"; unconcord to "m2" in Mark's elve file
-finout->permeability@_FillValue = -9999.
-
-
-; ___________________ 3D ______________________
-filevardef( finout, "patchfrac", ""float"", (/ "patch", "latitude", "longitude" /))
-finout->patchfrac@long_name     = "Patch fraction; 1.0 for 1x1 grid"
-finout->patchfrac@_FillValue =  -9999.
-finout->patchfrac               = 1.
-
-filevardef( finout, "SnowDepth", ""float"", (/"time", "latitude", "longitude" /))
-finout->SnowDepth@long_name     = "Actual depth of snow"
-finout->SnowDepth@units         = "m";
-finout->SnowDepth@_FillValue = -1.0
-finout->SnowDepth               = 0. ;read from CSIRO std, Mark's grid file is 0
-
-
-; ___________________ 4D ______________________
-filevardef( finout, "SoilMoist", ""float"", (/"time", "soil", "latitude", "longitude" /))
-; the value in Mark's gridinfo is higher than CSIRO std and the variance is less than CSIRO std
-; May need to run a 120 years simulation to get equibrilum soil moisture
-filevardef( finout, "SoilTemp", ""float"", (/"time", "soil", "latitude", "longitude" /))
-; Both gridinfo and CSIRO have value
-
-
-nml_4D = (/"SoilMoist","SoilTemp"/)
-
-do var_num = 0,1
-   print(nml_4D(var_num))
-   var     = new((/ntime,nsoil,nlat,nlon/),  ""float"") ;(time, soil, lat, lon)
-   var!0   = "time"
-   var!1   = "soil"
-   var!2   = "latitude"
-   var!3   = "longitude"
-   var&time= ispan(1,ntime,1)
-   var&soil= ispan(1,nsoil,1)
-   var&latitude  = fspan( lat_s, lat_e, nlat)
-   var&longitude = fspan( lon_s, lon_e, nlon)
-   do x = -43.75,-10.25,0.5
-      do y = 112.25,153.75,0.5
-         ;do time = 0,11
-            ;do soil = 0,5
-               var(:,:,{x-0.25:x+0.25},{y-0.25:y+0.25}) = fname_grid->$nml_4D(var_num)$(:,:,{x},{y})
-            ;end do
-         ;end do
-      end do
-   end do
-   finout->$nml_4D(var_num)$ = var*1.0
-   delete(var)
-end do
-
-finout->SoilMoist@long_name     = "Soil moisture profile from previous GSWP runs";
-finout->SoilMoist@units         = "m3/m3";
-finout->SoilMoist@_FillValue = -9999.
-
-finout->SoilTemp@long_name     = "Soil temperature profile from previous GSWP runs";
-finout->SoilTemp@units         = "K";
-finout->SoilTemp@_FillValue    = 9.96921e+36
-finout->SoilTemp               = where(ismissing(finout->SoilTemp), -9999., finout->SoilTemp)
-finout->SoilTemp@_FillValue    = -9999.
-
-setfileoption(finout,"DefineMode",False)
-print("Exit DefineMode")
 
 
 end
