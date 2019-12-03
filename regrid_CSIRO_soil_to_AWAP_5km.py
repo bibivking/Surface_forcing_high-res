@@ -84,18 +84,17 @@ def interpolate_to_5km_netcdf(fld , var , grid_lat, grid_lon , LAT , LON, level 
 
     Var = -9999.
     var[var == -9999.0] = np.nan
-    #a = np.zeros((grid_lat.shape), dtype=bool)
-    #b = np.zeros((grid_lat.shape), dtype=bool)
+    abc = np.zeros((len(grid_lat[:,0]),len(grid_lat[0,:]),4), dtype=bool)
+
     for i in np.arange(0,len(LAT)):
         for j in np.arange(0,len(LON)):
-            a = grid_lat[:,:] >= LAT[i]-0.025
-            b = grid_lat[:,:] < LAT[i]+0.025
-            c = grid_lon[:,:] >= LON[i]-0.025
-            d = grid_lon[:,:] < LON[i]+0.025
-            abc = [a,b,c,d]
-            print(abc)
-            #print(abc.shape)
-            Var[i,j] = var[np.all(abc, axis=2)].nanmean
+            abc[:,:,0] = grid_lat[:,:] >= LAT[i]-0.025
+            abc[:,:,1] = grid_lat[:,:] < LAT[i]+0.025
+            abc[:,:,2] = grid_lon[:,:] >= LON[i]-0.025
+            abc[:,:,3] = grid_lon[:,:] < LON[i]+0.025
+
+            print(var[np.all(abc, axis=2)])
+            Var[i,j] = np.nanmean(var[np.all(abc, axis=2)])
             print(var[a and b])
     f.close()
 
