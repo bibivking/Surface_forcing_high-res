@@ -17,22 +17,15 @@ end setvalues
 
 begin
 
+fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/nc_file/gridinfo_AWAP_CSIRO_AU_NAT.nc"
+finout  = addfile (fname_inout, "w")     ; open output file
+
 fname_grid = "/srv/ccrc/data45/z3509830/CABLE_runs/CABLE_site_runs/CABLE_AUX-dev/offline/CABLE_UNSW_GSWP3_gridinfo_0.5x0.5_site.nc"
                  ;lat from + to - lon from -180 to 180
 fgrid      = addfile (fname_grid,"r")
 
-fname_elev = "/srv/ccrc/data25/z5218916/cable/src/CABLE-AUX/offline/GSWP3_gwmodel_parameters.nc"
-                 ;lat from - to + lon from 0 to 360
-felev      = addfile (fname_elev,"r")
-
-fname_std  = "/srv/ccrc/data45/z3509830/CABLE_runs/CABLE_site_runs/CABLE_AUX-dev/offline/gridinfo_CSIRO_1x1.nc"
-                 ;lat from + to - lon from -180 to 180
-fstd       = addfile (fname_std,"r")
-
-fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/nc_file/gridinfo_AWAP_CSIRO_AU_NAT.nc"
-system("/bin/rm -f " + fname_out)    ; remove if exists
-fout  = addfile (fname_out, "c")     ; open output file
-
+fname_LAI  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/nc_file/lai_climatology_AWAP_grid.nc"
+fLAI  = addfile(fname_LAI, "r")
 
 ; _________________ set range of lat and lon ______________________
 lat_s = -44.
@@ -48,62 +41,114 @@ npatch = 1 ;
 nrad   = 3 ;
 nsdepth = 6
 
-; explicitly declare file definition mode. Improve efficiency.
-setfileoption(fout,"DefineMode",True)
+; ----------------- 3D --------------------
 
-; create global attributes of the file
-fAtt               = True            ; assign file attributes
-fAtt@title         = "CABLE surface forcing data over Australia"
-fAtt@source_file   = "rhosoil, sand, clay, silt, and organic come from CSIRO National Soil Attribute Maps; LAI comes from lai_climatology_AWAP_grid.nc, created by Martin De Kauwe; CABLE_UNSW_GSWP3_gridinfo_0.5x0.5_site.nc; GSWP3_gwmodel_parameters.nc"
-fAtt@Conventions   = "None"
-fAtt@creation_date = systemfunc ("date")
-fileattdef( fout, fAtt )            ; copy file attributes
 
-dimNames = (/"time", "latitude", "longitude", "soil", "patch", "rad", "soil_depth"/)
-dimSizes = (/ 12   ,  nlat     ,  nlon      ,  nsoil,  npatch,  nrad,  nsdepth    /)
-dimUnlim = (/ False,  False    ,  False     ,  False,  False ,  False, False       /)
-filedimdef(fout,dimNames,dimSizes,dimUnlim)
+; =======  LAI  ========
+; use Mark's gridinfo file to fill default value in Martin's LAI file
+filevardef( fout, "LAI", "float", (/"time", "latitude", "longitude" /))
 
-; __________________ 1D ___________________
-;filevardef( fout, "time", "integer", "time")
-;filevardef( fout, "patch", "integer", "patch")
-;filevardef( fout, "rad", "integer", "rad")
-;filevardef( fout, "soil", "integer", "soil")
+;LAI   = new((/ntime, nlat, nlon/),  "float")
+;LAI!0 = "latitude"
+;LAI!1 = "longitude"
+;LAI&latitude  = fspan( lat_s, lat_e, nlat)
+;LAI&longitude = fspan( lon_s, lon_e, nlon)
+LAI = fLAI->LAI
+lai = new((/ntime, nlat, nlon/),  "float")
 
-filevardef( fout, "soil_depth", "float", "soil_depth")
-fout->soil_depth@long_name     = "depth of the middle point in the soil layer"
-fout->soil_depth@units         = "m"
-fout->soil_depth@_FillValue =  -9999.
-fout->soil_depth               = (/0.011, 0.051, 0.157, 0.4385, 1.1855, 3.164/)
+do x = lat_s+0.25,lat_e-0.25,0.5
+  do y = lon_s+0.25,lon_e-0.25,0.5
+    do time = 0, 11
+       lai(time,{x-0.25:x+0.25},{y-0.25:y+0.25}) = fgrid->LAI(time,{x},{y}))
+    end do
+  end do
+end do
 
-filevardef( fout, "latitude", "float", "latitude")
-fout->latitude@long_name     = "latitude"
-fout->latitude@units         = "degrees_North"
-fout->latitude@_FillValue =  -9999.
-fout->latitude               = fspan( lat_s, lat_e, nlat)
+LAI = where(ismissing(LAI),lai,LAI)
+fout->LAI@long_name     = "Leaf area index"
+fout->LAI@_FillValue    = -9999. ; set -9999. because no missing value point in gridinfo
+fout->LAI               = LAI*1.0
+delete(LAI)
+delete(lai)
 
-filevardef( fout, "longitude", "float", "longitude")
-fout->longitude@long_name     = "longitude"
-fout->longitude@units         = "degrees_East"
-fout->longitude@_FillValue =  -9999.
-fout->longitude               = fspan( lon_s, lon_e, nlon)
 
-; _________________ 2D ___________________
-filevardef( fout, "iveg", "integer", (/ "latitude", "longitude" /))
-filevardef( fout, "landsea", "float", (/ "latitude", "longitude" /))
-filevardef( fout, "soil_color", "float", (/ "latitude", "longitude" /))
-filevardef( fout, "Albedo", "float", (/ "latitude", "longitude" /)) ; three dims in CSIRO std
-filevardef( fout, "albedo2", "float", (/ "latitude", "longitude" /))
-filevardef( fout, "Sy", "float", (/ "latitude", "longitude" /))
-filevardef( fout, "dtb", "float", (/ "latitude", "longitude" /))
-filevardef( fout, "drainage_density", "float", (/ "latitude", "longitude" /))
-;filevardef( fout, "drainage_dist", "float", (/ "latitude", "longitude" /)) ; this var is not used by CABLE
-filevardef( fout, "slope", "float", (/ "latitude", "longitude" /))
-filevardef( fout, "slope_std", "float", (/ "latitude", "longitude" /))
-filevardef( fout, "elevation", "float", (/ "latitude", "longitude" /))
-filevardef( fout, "elevation_std", "float", (/ "latitude", "longitude" /))
-filevardef( fout, "permeability", "float", (/ "latitude", "longitude" /))
-;filevardef( fout, "permeability_std", "float", (/ "latitude", "longitude" /)) ; this var is not used by CABLE
+rhosoil = new((/ntime, nlat, nlon/),  "float")
+sand    = new((/ntime, nlat, nlon/),  "float")
+clay    = new((/ntime, nlat, nlon/),  "float")
+silt    = new((/ntime, nlat, nlon/),  "float")
+organic = new((/ntime, nlat, nlon/),  "float")
+level_class = (/"000_005","005_015","015_030","030_060","060_100","100_200"/)
+
+do level = 0,5
+    frho  = addfile("Bulk_density_"+level_class(level)+"_AU_NAT_C.nc", "r")
+    fsand = addfile("Sand_"+level_class(level)+"_AU_NAT_C.nc", "r")
+    fclay = addfile("Clay_"+level_class(level)+"_AU_NAT_C.nc", "r")
+    fsilt = addfile("Silt_"+level_class(level)+"_AU_NAT_C.nc", "r")
+    forg  = addfile("Organic_C_"+level_class(level)+"_AU_NAT_C.nc", "r")
+
+    rhosoil(level,:,:) = frho->Bulk_density
+    sand(level,:,:)    = fsand->Sand
+    clay(level,:,:)    = fclay->Clay
+    silt(level,:,:)    = fsilt->Silt
+    organic(level,:,:) = forg->Organic_C
+
+    (/0.011, 0.051, 0.157, 0.4385, 1.1855, 3.164/)
+
+
+
+
+
+filevardef( fout, "rhosoil_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
+filevardef( fout, "sand_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
+filevardef( fout, "clay_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
+filevardef( fout, "silt_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
+filevardef( fout, "org_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
+
+filevardef( fout, "bch_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
+filevardef( fout, "sucs_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
+filevardef( fout, "ssat_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
+filevardef( fout, "sfc_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
+filevardef( fout, "css_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
+filevardef( fout, "cnsd_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
+filevardef( fout, "hyds_vec", "float", (/ "soil_depth", "latitude", "longitude" /))
+filevardef( fout, "watr", "float",     (/ "soil_depth", "latitude", "longitude" /))
+
+
+
+
+
+
+
+
+
+; ----------------- 2D --------------------
+filevardef( fout, "rhosoil", "float", (/ "latitude", "longitude" /))
+filevardef( fout, "sand", "float", (/ "latitude", "longitude" /))
+filevardef( fout, "silt", "float", (/ "latitude", "longitude" /))
+filevardef( fout, "clay", "float", (/ "latitude", "longitude" /))
+filevardef( fout, "organic", "float", (/ "latitude", "longitude" /))
+
+filevardef( fout, "hyds", "float", (/ "latitude", "longitude" /))
+filevardef( fout, "bch", "float", (/ "latitude", "longitude" /))
+filevardef( fout, "sfc", "float", (/ "latitude", "longitude" /))
+filevardef( fout, "ssat", "float", (/ "latitude", "longitude" /))
+filevardef( fout, "sucs", "float", (/ "latitude", "longitude" /))
+filevardef( fout, "swilt", "float", (/ "latitude", "longitude" /))
+filevardef( fout, "css", "float", (/ "latitude", "longitude" /))
+filevardef( fout, "cnsd", "float", (/ "latitude", "longitude" /))
+
+filevardef( fout, "isoil", integer, (/ "latitude", "longitude" /)) ; Need to be calculated
+
+fout->isoil@long_name     = "Zobler soil type";
+fout->isoil@missing_value = -1
+
+; ----------------- 3D --------------------
+
+
+
+
+------------------------------------------------------
+
 
 nml_2D = (/\
     "iveg", "landsea", "soil_color", "Albedo", "albedo2",   \
@@ -116,7 +161,7 @@ do var_num = 0, dimsizes(nml_2D)-1
    if var_num .eq. 0 then
       var   = new((/nlat,nlon/),  "integer")
    else
-      var   = new((/nlat,nlon/),  "float")
+      var   = new((/nlat,nlon/),  ""float"")
    end if
    var!0 = "latitude"
    var!1 = "longitude"
@@ -125,7 +170,7 @@ do var_num = 0, dimsizes(nml_2D)-1
    do x = lat_s+0.25,lat_e-0.25,0.5
       do y = lon_s+0.25,lon_e-0.25,0.5
         if var_num .eq. 0 then
-           var({x-0.25:x+0.25},{y-0.25:y+0.25}) = floattointeger(fgrid->$nml_2D(var_num)$({x},{y}))
+           var({x-0.25:x+0.25},{y-0.25:y+0.25}) = "float"tointeger(fgrid->$nml_2D(var_num)$({x},{y}))
         else if var_num .le. 4 then
            var({x-0.25:x+0.25},{y-0.25:y+0.25}) = fgrid->$nml_2D(var_num)$({x},{y})
         else
@@ -187,12 +232,12 @@ fout->permeability@_FillValue = -9999.
 
 
 ; ___________________ 3D ______________________
-filevardef( fout, "patchfrac", "float", (/ "patch", "latitude", "longitude" /))
+filevardef( fout, "patchfrac", ""float"", (/ "patch", "latitude", "longitude" /))
 fout->patchfrac@long_name     = "Patch fraction; 1.0 for 1x1 grid"
 fout->patchfrac@_FillValue =  -9999.
 fout->patchfrac               = 1.
 
-filevardef( fout, "SnowDepth", "float", (/"time", "latitude", "longitude" /))
+filevardef( fout, "SnowDepth", ""float"", (/"time", "latitude", "longitude" /))
 fout->SnowDepth@long_name     = "Actual depth of snow"
 fout->SnowDepth@units         = "m";
 fout->SnowDepth@_FillValue = -1.0
@@ -200,10 +245,10 @@ fout->SnowDepth               = 0. ;read from CSIRO std, Mark's grid file is 0
 
 
 ; ___________________ 4D ______________________
-filevardef( fout, "SoilMoist", "float", (/"time", "soil", "latitude", "longitude" /))
+filevardef( fout, "SoilMoist", ""float"", (/"time", "soil", "latitude", "longitude" /))
 ; the value in Mark's gridinfo is higher than CSIRO std and the variance is less than CSIRO std
 ; May need to run a 120 years simulation to get equibrilum soil moisture
-filevardef( fout, "SoilTemp", "float", (/"time", "soil", "latitude", "longitude" /))
+filevardef( fout, "SoilTemp", ""float"", (/"time", "soil", "latitude", "longitude" /))
 ; Both gridinfo and CSIRO have value
 
 
@@ -211,7 +256,7 @@ nml_4D = (/"SoilMoist","SoilTemp"/)
 
 do var_num = 0,1
    print(nml_4D(var_num))
-   var     = new((/ntime,nsoil,nlat,nlon/),  "float") ;(time, soil, lat, lon)
+   var     = new((/ntime,nsoil,nlat,nlon/),  ""float"") ;(time, soil, lat, lon)
    var!0   = "time"
    var!1   = "soil"
    var!2   = "latitude"
@@ -222,11 +267,11 @@ do var_num = 0,1
    var&longitude = fspan( lon_s, lon_e, nlon)
    do x = -43.75,-10.25,0.5
       do y = 112.25,153.75,0.5
-         do time = 0,11
-            do soil = 0,5
-               var(time,soil,{x-0.25:x+0.25},{y-0.25:y+0.25}) = fgrid->$nml_4D(var_num)$(time,soil,{x},{y})
-            end do
-         end do
+         ;do time = 0,11
+            ;do soil = 0,5
+               var(:,:,{x-0.25:x+0.25},{y-0.25:y+0.25}) = fname_grid->$nml_4D(var_num)$(:,:,{x},{y})
+            ;end do
+         ;end do
       end do
    end do
    fout->$nml_4D(var_num)$ = var*1.0
