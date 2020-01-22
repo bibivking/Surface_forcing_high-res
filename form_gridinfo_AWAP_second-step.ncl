@@ -6,7 +6,7 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/shea_util.ncl"
 ;*******************************************
 
 ; Changed from 2-Dec-2019
-; This script (converge_grid_elev_for_AWAP.ncl) is changed from converge_grid_elev_std_opt_mask_sand+sand2.ncl
+; This script (form_gridinfo_AWAP_second-step.ncl) is changed from converge_grid_elev_std_opt_mask_sand+sand2.ncl
 ; and AU_gridinfo_AWAP.ncl
 
 ;______ From Mark Decker's code ______
@@ -24,8 +24,9 @@ fname_grid = "/srv/ccrc/data45/z3509830/CABLE_runs/CABLE_site_runs/CABLE_AUX-dev
                  ;lat from + to - lon from -180 to 180
 fgrid      = addfile (fname_grid,"r")
 
-fname_LAI  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/nc_file/lai_climatology_AWAP_grid.nc"
-fLAI  = addfile(fname_LAI, "r")
+;fname_LAI  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/nc_file/lai_climatology_AWAP_grid.nc" ; Gimms
+fname_LAI  = "/srv/ccrc/data04/z3509830/Fluxnet_data/All_flux_sites_processed/Copernicus_LAI_time_series/Aus/monthly_climatology.nc" ; Anna's Copernicus
+fLAI       = addfile(fname_LAI, "r")
 
 ; _________________ set range of lat and lon ______________________
 lat_s = -44.
@@ -44,6 +45,7 @@ nsdepth = 6
 soil_depth= (/0.011,0.051,0.157,0.4385,1.1855,3.164/)
 latitude  = fspan( lat_s, lat_e, nlat)
 longitude = fspan( lon_s, lon_e, nlon)
+
 ; ----------------- 3D --------------------
 
 ; =======  LAI  ========
@@ -56,21 +58,14 @@ filevardef( finout, "LAI", "float", (/"time", "latitude", "longitude" /))
 ;LAI&latitude  = fspan( lat_s, lat_e, nlat)
 ;LAI&longitude = fspan( lon_s, lon_e, nlon)
 LAI = fLAI->LAI
+LON = fLAI->lon
+LAT = fLAI->lat
+
 lai = new((/ntime, nlat, nlon/),  float)
-
-do x = lat_s+0.25,lat_e-0.25,0.5
-  do y = lon_s+0.25,lon_e-0.25,0.5
-    do time = 0, 11
-       lai(time,{x-0.25:x+0.25},{y-0.25:y+0.25}) = fgrid->LAI(time,{x},{y}))
-    end do
-  end do
-end do
-
-LAI = where(ismissing(LAI),lai,LAI)
+lai = area_hi2lores_Wrap( LON, LAT, doubletofloat(LAI) , False, 1, doubletofloat(finout->longitude), doubletofloat(finout->latitude), False)
 finout->LAI@long_name     = "Leaf area index"
 finout->LAI@_FillValue    = -9999. ; set -9999. because no missing value point in gridinfo
-finout->LAI               = LAI*1.0
-delete(LAI)
+finout->LAI               = lai
 delete(lai)
 
 ; =======  SOIL  ========
@@ -249,8 +244,6 @@ finout->watr@long_name        = "Residual water content of the soil"
 finout->watr@units            = "m3/m3"
 
 
-
-
 ; ----------------- 2D --------------------
 filevardef( finout, "rhosoil", "float", (/ "latitude", "longitude" /))
 filevardef( finout, "sand", "float", (/ "latitude", "longitude" /))
@@ -266,9 +259,6 @@ filevardef( finout, "sucs", "float", (/ "latitude", "longitude" /))
 filevardef( finout, "swilt", "float", (/ "latitude", "longitude" /))
 filevardef( finout, "css", "float", (/ "latitude", "longitude" /))
 filevardef( finout, "cnsd", "float", (/ "latitude", "longitude" /))
-
-
-
 
 filevardef( finout, "isoil", "integer", (/ "latitude", "longitude" /)) ; Need to be calculated
 

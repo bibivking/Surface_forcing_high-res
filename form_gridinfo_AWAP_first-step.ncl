@@ -6,7 +6,7 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/shea_util.ncl"
 ;*******************************************
 
 ; Changed from 2-Dec-2019
-; This script (converge_grid_elev_for_AWAP.ncl) is changed from converge_grid_elev_std_opt_mask_sand+sand2.ncl
+; This script (form_gridinfo_AWAP_first-step.ncl) is changed from converge_grid_elev_std_opt_mask_sand+sand2.ncl
 ; and AU_gridinfo_AWAP.ncl
 
 ;______ From Mark Decker's code ______
@@ -17,6 +17,7 @@ end setvalues
 
 begin
 
+; read in metadata
 fname_grid = "/srv/ccrc/data45/z3509830/CABLE_runs/CABLE_site_runs/CABLE_AUX-dev/offline/CABLE_UNSW_GSWP3_gridinfo_0.5x0.5_site.nc"
                  ;lat from + to - lon from -180 to 180
 fgrid      = addfile (fname_grid,"r")
@@ -29,6 +30,7 @@ fname_std  = "/srv/ccrc/data45/z3509830/CABLE_runs/CABLE_site_runs/CABLE_AUX-dev
                  ;lat from + to - lon from -180 to 180
 fstd       = addfile (fname_std,"r")
 
+; name of output file
 fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/nc_file/gridinfo_AWAP_CSIRO_AU_NAT.nc"
 system("/bin/rm -f " + fname_out)    ; remove if exists
 fout  = addfile (fname_out, "c")     ; open output file
@@ -138,19 +140,21 @@ do var_num = 0, dimsizes(nml_2D)-1
    delete(var)
 end do
 
+; Edit the attributes of variables
+
 fout->iveg@long_name     = "CSIRO classification of veg type"
 fout->iveg@_FillValue = -1
 
 fout->landsea@units         = "0:land, 1:sea";
 fout->landsea@_FillValue = -9999.
 
-fout->landsea@_FillValue = -9999.
-
 fout->Albedo@long_name = "unknown sources" ;CSIRO std "ISLSCP2 snow-free bareground albedo";
 fout->Albedo@_FillValue = -1.0
 
-fout->Albedo@long_name = "unknown sources" ; CSIRO std "UM SNOW-FREE ALBEDO OF SOIL";
-fout->Albedo@_FillValue = -9999.
+fout->albedo2@long_name = "unknown sources" ; CSIRO std "UM SNOW-FREE ALBEDO OF SOIL";
+fout->albedo2@_FillValue = -9999.
+
+; "soil_color" information
 
 fout->Sy@long_name = "saturated water content of the aquifer (GWssat_vec)"
 fout->Sy@units = "m3/m3";
@@ -189,13 +193,13 @@ fout->permeability@_FillValue = -9999.
 ; ___________________ 3D ______________________
 filevardef( fout, "patchfrac", "float", (/ "patch", "latitude", "longitude" /))
 fout->patchfrac@long_name     = "Patch fraction; 1.0 for 1x1 grid"
-fout->patchfrac@_FillValue =  -9999.
+fout->patchfrac@_FillValue    =  -9999.
 fout->patchfrac               = 1.
 
 filevardef( fout, "SnowDepth", "float", (/"time", "latitude", "longitude" /))
 fout->SnowDepth@long_name     = "Actual depth of snow"
 fout->SnowDepth@units         = "m";
-fout->SnowDepth@_FillValue = -1.0
+fout->SnowDepth@_FillValue    = -1.0
 fout->SnowDepth               = 0. ;read from CSIRO std, Mark's grid file is 0
 
 

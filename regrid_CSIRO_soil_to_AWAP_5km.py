@@ -43,10 +43,13 @@ def main( fn , fld , LAT , LON , level , unit , long_name , description):
     print(transf)
     lon = np.arange(transf[0],transf[0]+cols*transf[1],transf[1])
     lat = np.arange(transf[3]+(rows-1)*transf[5],transf[3]-transf[5],-transf[5])
+
     print(lon)
     print(lat)
-    # plot_spitial(var,lon,lat)
+    #plot_spitial(var,lon,lat)
     grid_lat, grid_lon = np.meshgrid(lat,lon)
+    print(grid_lat)
+    print(grid_lon)
     interpolate_to_5km_netcdf(fld , var , grid_lat, grid_lon , LAT , LON , level , unit , long_name , description)
 
     ds = None
@@ -92,10 +95,10 @@ def interpolate_to_5km_netcdf(fld , var , grid_lat, grid_lon , LAT , LON, level 
             abc[:,:,1] = grid_lat[:,:] < LAT[i]+0.025
             abc[:,:,2] = grid_lon[:,:] >= LON[i]-0.025
             abc[:,:,3] = grid_lon[:,:] < LON[i]+0.025
-
-            print(var[np.all(abc, axis=2)])
-            Var[i,j] = np.nanmean(var[np.all(abc, axis=2)])
-            print(var[a and b])
+            print(np.any(np.all(abc, axis=2)))
+            if np.any(np.all(abc, axis=2)):
+                Var[i,j] = np.nanmean(var[np.all(abc, axis=2)])
+                print(var[a and b])
     f.close()
 
 def plot_spitial(var,lon,lat):
@@ -144,8 +147,8 @@ if __name__ == "__main__":
     LON   = pd.DataFrame(cable.variables['lon'][:], columns =['lon']).to_numpy().flatten()
     fcable = None
     cable  = None
-    print(LAT.shape)
-    print(LON.shape)
+    print(LAT)
+    print(LON)
 
     for fld in folder:
         if fld == 'Bulk_density':
