@@ -192,7 +192,7 @@ fout->permeability@_FillValue = -9999.
 
 ; ___________________ 3D ______________________
 filevardef( fout, "patchfrac", "float", (/ "patch", "latitude", "longitude" /))
-fout->patchfrac@long_name     = "Patch fraction; 1.0 for 1x1 grid"
+fout->patchfrac@long_name     = "Patch fraction" ; 1.0 for 1x1 grid
 fout->patchfrac@_FillValue    =  -9999.
 fout->patchfrac               = 1.
 
