@@ -17,6 +17,21 @@ end setvalues
 
 begin
 
+; _________________ option __________________
+  soil_data_type = 1 ; 0: CSIRO, 1: OpenLandMap
+
+; ________________ file name ________________
+if soil_data_type .eq. 0 then
+    fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT.nc"
+    system("/bin/rm -f " + fname_out)    ; remove if exists
+    fout  = addfile (fname_out, "c")     ; open output file
+else if soil_data_type .eq. 1 then
+    fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap.nc"
+    system("/bin/rm -f " + fname_out)    ; remove if exists
+    fout  = addfile (fname_out, "c")     ; open output file
+end if
+end if
+
 ; read in metadata
 fname_grid = "/srv/ccrc/data45/z3509830/CABLE_runs/CABLE_site_runs/CABLE_AUX-dev/offline/CABLE_UNSW_GSWP3_gridinfo_0.5x0.5_site.nc"
                  ;lat from + to - lon from -180 to 180
@@ -29,12 +44,6 @@ felev      = addfile (fname_elev,"r")
 fname_std  = "/srv/ccrc/data45/z3509830/CABLE_runs/CABLE_site_runs/CABLE_AUX-dev/offline/gridinfo_CSIRO_1x1.nc"
                  ;lat from + to - lon from -180 to 180
 fstd       = addfile (fname_std,"r")
-
-; name of output file
-fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/nc_file/gridinfo_AWAP_CSIRO_AU_NAT.nc"
-system("/bin/rm -f " + fname_out)    ; remove if exists
-fout  = addfile (fname_out, "c")     ; open output file
-
 
 ; _________________ set range of lat and lon ______________________
 lat_s = -44.
@@ -56,7 +65,7 @@ setfileoption(fout,"DefineMode",True)
 ; create global attributes of the file
 fAtt               = True            ; assign file attributes
 fAtt@title         = "CABLE surface forcing data over Australia"
-fAtt@source_file   = "rhosoil, sand, clay, silt, and organic come from CSIRO National Soil Attribute Maps; LAI comes from lai_climatology_AWAP_grid.nc, created by Martin De Kauwe; CABLE_UNSW_GSWP3_gridinfo_0.5x0.5_site.nc; GSWP3_gwmodel_parameters.nc"
+fAtt@source_file   = "rhosoil, sand, clay, silt, and organic come from CSIRO National Soil Attribute Maps; LAI comes from monthly_climatology.nc, created by Martin De Kauwe; CABLE_UNSW_GSWP3_gridinfo_0.5x0.5_site.nc; GSWP3_gwmodel_parameters.nc"
 fAtt@Conventions   = "None"
 fAtt@creation_date = systemfunc ("date")
 fileattdef( fout, fAtt )            ; copy file attributes
@@ -143,7 +152,7 @@ end do
 ; Edit the attributes of variables
 
 fout->iveg@long_name     = "CSIRO classification of veg type"
-fout->iveg@_FillValue = -1
+fout->iveg@_FillValue    = -1
 
 fout->landsea@units         = "0:land, 1:sea";
 fout->landsea@_FillValue = -9999.
@@ -249,6 +258,5 @@ fout->SoilTemp@_FillValue    = -9999.
 
 setfileoption(fout,"DefineMode",False)
 print("Exit DefineMode")
-
 
 end
