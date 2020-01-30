@@ -21,15 +21,15 @@ end setvalues
 begin
 
 ; _________________ option __________________
-  soil_data_type = 1 ; 0: CSIRO, 1: OpenLandMap
+  soil_data_type = 0 ; 0: CSIRO, 1: OpenLandMap
 
 ; ________________ file name ________________
 if soil_data_type .eq. 0 then
     fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT.nc"
-    finout  = addfile (fname_inout, "w")     ; open output file
+    finout  = addfile (fname_inout, "r")     ; open output file
 else if soil_data_type .eq. 1 then
     fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap.nc"
-    finout  = addfile (fname_inout, "w")     ; open output file
+    finout  = addfile (fname_inout, "r")     ; open output file
 end if
 end if
 
@@ -74,6 +74,8 @@ var_name = (/ "rhosoil_vec", "sand_vec", "clay_vec", "silt_vec", "org_vec", "bch
 ;print(finout->swilt_vec)
 do var_num = 0,dimsizes(var_name)-1
   printVarSummary(finout->$var_name(var_num)$)
+  print(min(finout->$var_name(var_num)$))
+  print(max(finout->$var_name(var_num)$))
   res@txString = var_name(var_num)
   plot = gsn_csm_contour(wks,finout->$var_name(var_num)$(0,:,:),res)
 end do

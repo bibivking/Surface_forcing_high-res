@@ -21,7 +21,7 @@ end setvalues
 begin
 
 ; _________________ option __________________
-  soil_data_type = 1 ; 0: CSIRO, 1: OpenLandMap
+  soil_data_type = 0 ; 0: CSIRO, 1: OpenLandMap
 
 ; ________________ file name ________________
 if soil_data_type .eq. 0 then
@@ -93,6 +93,8 @@ sand_temp    = new((/nsdepth, nlat, nlon/), float)
 clay_temp    = new((/nsdepth, nlat, nlon/), float)
 silt_temp    = new((/nsdepth, nlat, nlon/), float)
 organic_temp = new((/nsdepth, nlat, nlon/), float)
+mask_temp    = new((/nsdepth, nlat, nlon/), float)
+
 
 rhosoil_vec = new((/nsdepth, nlat, nlon/), float)
 sand_vec    = new((/nsdepth, nlat, nlon/), float)
@@ -141,20 +143,59 @@ if soil_data_type .eq. 0 then
         LAT = frho->lat
         LON = frho->lon
 
-        ; rhosoil g/cm3 -> kg/m3
-        rhosoil_temp(level,:,:) = area_hi2lores_Wrap( LON, LAT, frho->Bulk_density*1000.,\
+
+        rhosoil_temp@_FillValue = -9999.
+        sand_temp@_FillValue    = -9999.
+        clay_temp@_FillValue    = -9999.
+        silt_temp@_FillValue    = -9999.
+        organic_temp@_FillValue = -9999.
+
+        rhosoil_temp(level,:,:) = area_hi2lores_Wrap( LON, LAT, frho->Bulk_density,\
                                   False, 1, finout->longitude, finout->latitude, False)
-        ; sand, clay, silt and organic % -> m3/m3
-        sand_temp(level,:,:)    = area_hi2lores_Wrap( LON, LAT, fsand->Sand/100.,\
+        sand_temp(level,:,:)    = area_hi2lores_Wrap( LON, LAT, fsand->Sand,\
                                   False, 1, finout->longitude, finout->latitude, False)
-        clay_temp(level,:,:)    = area_hi2lores_Wrap( LON, LAT, fclay->Clay/100.,\
+        clay_temp(level,:,:)    = area_hi2lores_Wrap( LON, LAT, fclay->Clay,\
                                   False, 1, finout->longitude, finout->latitude, False)
-        silt_temp(level,:,:)    = area_hi2lores_Wrap( LON, LAT, fsilt->Silt/100.,\
+        silt_temp(level,:,:)    = area_hi2lores_Wrap( LON, LAT, fsilt->Silt,\
                                   False, 1, finout->longitude, finout->latitude, False)
-        organic_temp(level,:,:) = area_hi2lores_Wrap( LON, LAT, forg->Organic_C/100.,\
+        organic_temp(level,:,:) = area_hi2lores_Wrap( LON, LAT, forg->Organic_C,\
                                   False, 1, finout->longitude, finout->latitude, False)
 
+        ; make mask
+        maskout = frho->Bulk_density
+        maskout = where(ismissing(maskout), -9999. , 1.)
+
+        mask_temp(level,:,:)    = area_hi2lores_Wrap( LON, LAT, maskout,\
+                                  False, 1, finout->longitude, finout->latitude, False)
+        mask_temp(level,:,:)    = where(mask_temp(level,:,:) .ne. 1., -9999., 1. )
+        mask_temp@_FillValue    = -9999.
     end do
+
+    ; rhosoil g/cm3 -> kg/m3
+    rhosoil_temp = rhosoil_temp*1000.
+    ; % -> m3/m3
+    sand_temp    = sand_temp/100.
+    clay_temp    = clay_temp/100.
+    silt_temp    = silt_temp/100.
+    organic_temp = organic_temp/100.
+
+    rhosoil_temp = where( ismissing(rhosoil_temp) .or. ismissing(mask_temp), -9999., rhosoil_temp)
+
+    sand_temp    = where( ismissing(sand_temp) .or. ismissing(mask_temp)   , -9999., sand_temp)
+    sand_temp    = where( .not. ismissing(sand_temp) .and. sand_temp .lt. 0. , 0., sand_temp)
+    sand_temp    = where( sand_temp .gt. 1. , 1., sand_temp)
+
+    clay_temp    = where( ismissing(clay_temp) .or. ismissing(mask_temp)   , -9999., clay_temp)
+    clay_temp    = where( .not. ismissing(clay_temp) .and. clay_temp .lt. 0. , 0., clay_temp)
+    clay_temp    = where( clay_temp .gt. 1. , 1., clay_temp)
+
+    silt_temp    = where( ismissing(silt_temp) .or. ismissing(mask_temp)   , -9999., silt_temp)
+    silt_temp    = where( .not. ismissing(silt_temp) .and. silt_temp .lt. 0. , 0., silt_temp)
+    silt_temp    = where( silt_temp .gt. 1. , 1., silt_temp)
+
+    organic_temp = where( ismissing(organic_temp) .or. ismissing(mask_temp), -9999., organic_temp)
+    organic_temp = where( .not. ismissing(organic_temp) .and. organic_temp .lt. 0. , 0., organic_temp)
+    organic_temp = where( organic_temp .gt. 1. , 1., organic_temp)
 
     rhosoil_vec(0,:,:) = rhosoil_temp(0,:,:)
     sand_vec(0,:,:)    = sand_temp(0,:,:)
@@ -190,7 +231,7 @@ if soil_data_type .eq. 0 then
     sand_vec(5,:,:)    = sand_temp(5,:,:)
     clay_vec(5,:,:)    = clay_temp(5,:,:)
     silt_vec(5,:,:)    = silt_temp(5,:,:)
-    org_vec(5,:,:) = organic_temp(5,:,:)
+    org_vec(5,:,:)     = organic_temp(5,:,:)
 
     ; rhosoil g/cm3 -> kg/m3
     delete(rhosoil_temp)
@@ -203,7 +244,6 @@ if soil_data_type .eq. 0 then
 else if soil_data_type .eq. 1 then
 
     level_class = (/"0","10","30","60","100","200"/)
-
 
     do level = 0,5
         print(level_class(level))
@@ -221,6 +261,7 @@ else if soil_data_type .eq. 1 then
         silt_temp@_FillValue    = 255.
         organic_temp@_FillValue = 255.
 
+
         rhosoil_temp(level,:,:) = area_hi2lores_Wrap( LON, LAT, frho->Soil_bulkdens,\
                                   False, 1, finout->longitude, finout->latitude, False)
         ;print(rhosoil_temp(level,:,:))
@@ -233,7 +274,17 @@ else if soil_data_type .eq. 1 then
         organic_temp(level,:,:) = area_hi2lores_Wrap( LON, LAT, forg->organic_C,\
                                   False, 1, finout->longitude, finout->latitude, False)
         ;print(organic_temp(level,:,:))
+
+        ; make mask
+        maskout = frho->Soil_bulkdens
+        maskout = where(ismissing(maskout), -9999. , 1.)
+
+        mask_temp(level,:,:)    = area_hi2lores_Wrap( LON, LAT, maskout,\
+                                  False, 1, finout->longitude, finout->latitude, False)
+        mask_temp(level,:,:)    = where(mask_temp(level,:,:) .ne. 1., -9999., 1. )
+        mask_temp@_FillValue    = -9999.
     end do
+    ;print(mask_temp)
     ; rhosoil 10 kg/m3 -> kg/m3
     rhosoil_temp = rhosoil_temp*10.
     ; sand, clay % -> m3/m3
@@ -243,12 +294,29 @@ else if soil_data_type .eq. 1 then
     organic_temp = organic_temp*0.005
     ;print(rhosoil_temp)
 
-    rhosoil_temp = where( ismissing(rhosoil_temp) , -9999., rhosoil_temp)
-    sand_temp    = where( ismissing(sand_temp)    , -9999., sand_temp)
-    clay_temp    = where( ismissing(clay_temp)    , -9999., clay_temp)
-    silt_temp    = where( ismissing(sand_temp) .or. ismissing(clay_temp), -9999.,\
-                   1. - sand_temp - clay_temp)
-    organic_temp = where( ismissing(organic_temp) , -9999., organic_temp)
+    rhosoil_temp = where( ismissing(rhosoil_temp) .or. ismissing(mask_temp), -9999., rhosoil_temp)
+
+    sand_temp    = where( ismissing(sand_temp) .or. ismissing(mask_temp)   , -9999., sand_temp)
+    sand_temp    = where( .not. ismissing(sand_temp) .and. sand_temp .lt. 0. , 0., sand_temp)
+    sand_temp    = where( sand_temp .gt. 1. , 1., sand_temp)
+
+    clay_temp    = where( ismissing(clay_temp) .or. ismissing(mask_temp)   , -9999., clay_temp)
+    clay_temp    = where( .not. ismissing(clay_temp) .and. clay_temp .lt. 0. , 0., clay_temp)
+    clay_temp    = where( clay_temp .gt. 1. , 1., clay_temp)
+
+    silt_temp    = where( ismissing(sand_temp) .or. ismissing(clay_temp) .or. ismissing(mask_temp),\
+                   -9999., 1. - sand_temp - clay_temp)
+
+    organic_temp = where( ismissing(organic_temp) .or. ismissing(mask_temp), -9999., organic_temp)
+    organic_temp = where( .not. ismissing(organic_temp) .and. organic_temp .lt. 0. , 0., organic_temp)
+    organic_temp = where( organic_temp .gt. 1. , 1., organic_temp)
+
+    rhosoil_temp = where( (sand_temp + clay_temp) .gt. 1., -9999., rhosoil_temp)
+    sand_temp    = where( (sand_temp + clay_temp) .gt. 1., -9999., sand_temp)
+    clay_temp    = where( (sand_temp + clay_temp) .gt. 1., -9999., clay_temp)
+    silt_temp    = where( (sand_temp + clay_temp) .gt. 1., -9999., silt_temp)
+    organic_temp = where( (sand_temp + clay_temp) .gt. 1., -9999., organic_temp)
+
     ;print(rhosoil_temp)
     ; 1.1 cm <- 0 cm
     rhosoil_vec(0,:,:) = rhosoil_temp(0,:,:)*1.
@@ -331,7 +399,7 @@ do level = 0,5
                           + watr(level,:,:)
 end do
 
-print(swilt_vec)
+;print(swilt_vec)
 
 sfc_vec  = (ssat_vec - watr) * ( 1.157407 * 10^(-06) / hyds_vec) ^ (1.0 / (2.0*bch_vec + 3.0) ) + watr
 css_vec  = (1.0-org_vec) * ( 850*(1.0 - sand_vec - clay_vec) + 865.0*clay_vec + 750.0*sand_vec ) + org_vec*950.0
@@ -363,7 +431,7 @@ finout->sand_vec    = sand_vec*1.
 finout->clay_vec    = clay_vec*1.
 finout->silt_vec    = silt_vec*1.
 finout->org_vec     = org_vec*1.
-finout->hyds_vec    = hyds_vec
+finout->hyds_vec    = hyds_vec*1.
 finout->bch_vec     = bch_vec*1.
 finout->sucs_vec    = sucs_vec*(-1.0)/1000. ; sucs should be positive value?? or negetive value?
 finout->ssat_vec    = ssat_vec*1.
@@ -446,6 +514,7 @@ silt = finout->silt
 ; Zobler soil type from Mark Decker's /srv/ccrc/data44/z3362708/CABLE/Data_set_codes/gswp3_srf_creation/zobler_type.ncl
 filevardef( finout, "isoil", "integer", (/ "latitude", "longitude" /)) ; Need to be calculated
 isoil = new((/nlat, nlon/),"integer")
+isoil@_FillValue = -9999
 FV    = -9999
 isoil = -9999
 
