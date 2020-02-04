@@ -51,12 +51,12 @@ lat_e = -10.
 lon_s = 112.
 lon_e = 154.
 
-nlat   = 681 ;
+nlat   = 681
 nlon   = 841
-ntime  = 12 ;
-nsoil  = 6 ;
-npatch = 1 ;
-nrad   = 3 ;
+ntime  = 12
+nsoil  = 6
+npatch = 1
+nrad   = 3
 nsdepth = 6
 
 ; explicitly declare file definition mode. Improve efficiency.
@@ -65,7 +65,12 @@ setfileoption(fout,"DefineMode",True)
 ; create global attributes of the file
 fAtt               = True            ; assign file attributes
 fAtt@title         = "CABLE surface forcing data over Australia"
-fAtt@source_file   = "rhosoil, sand, clay, silt, and organic come from CSIRO National Soil Attribute Maps; LAI comes from monthly_climatology.nc, created by Martin De Kauwe; CABLE_UNSW_GSWP3_gridinfo_0.5x0.5_site.nc; GSWP3_gwmodel_parameters.nc"
+if soil_data_type .eq. 0 then
+    fAtt@source_file = "rhosoil, sand, clay, silt, and organic come from CSIRO National Soil Attribute Maps; LAI comes from monthly_climatology.nc; CABLE_UNSW_GSWP3_gridinfo_0.5x0.5_site.nc; GSWP3_gwmodel_parameters.nc"
+else if soil_data_type .eq. 1 then
+    fAtt@source_file = "rhosoil, sand, clay, silt, and organic come from OpenLandMap Soil Maps; LAI comes from monthly_climatology.nc; CABLE_UNSW_GSWP3_gridinfo_0.5x0.5_site.nc; GSWP3_gwmodel_parameters.nc"
+end if
+end if
 fAtt@Conventions   = "None"
 fAtt@creation_date = systemfunc ("date")
 fileattdef( fout, fAtt )            ; copy file attributes
@@ -76,27 +81,41 @@ dimUnlim = (/ False,  False    ,  False     ,  False,  False ,  False, False    
 filedimdef(fout,dimNames,dimSizes,dimUnlim)
 
 ; __________________ 1D ___________________
-;filevardef( fout, "time", "integer", "time")
-;filevardef( fout, "patch", "integer", "patch")
-;filevardef( fout, "rad", "integer", "rad")
-;filevardef( fout, "soil", "integer", "soil")
+filevardef( fout, "time", "integer", "time")
+fout->time@units     = "months" ;
+fout->time@long_name = "time"
+fout->time           = (/1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12/)
+
+filevardef( fout, "patch", "double", "patch")
+fout->patch@units     = "patch fraction"
+fout->patch@long_name = "patch"
+fout->patch           = 1.
+
+filevardef( fout, "rad", "integer", "rad")
+fout->rad@long_name = "rad"
+fout->rad           = (/1, 2, 3/)
+
+filevardef( fout, "soil", "integer", "soil")
+fout->soil@units = "soil layers" ;
+fout->soil@long_name = "soil" ;
+fout->soil           = (/1, 2, 3, 4, 5, 6/)
 
 filevardef( fout, "soil_depth", "float", "soil_depth")
 fout->soil_depth@long_name     = "depth of the middle point in the soil layer"
 fout->soil_depth@units         = "m"
-fout->soil_depth@_FillValue =  -9999.
+fout->soil_depth@_FillValue    =  -9999.
 fout->soil_depth               = (/0.011, 0.051, 0.157, 0.4385, 1.1855, 3.164/)
 
 filevardef( fout, "latitude", "float", "latitude")
 fout->latitude@long_name     = "latitude"
 fout->latitude@units         = "degrees_North"
-fout->latitude@_FillValue =  -9999.
+fout->latitude@_FillValue    =  -9999.
 fout->latitude               = fspan( lat_s, lat_e, nlat)
 
 filevardef( fout, "longitude", "float", "longitude")
 fout->longitude@long_name     = "longitude"
 fout->longitude@units         = "degrees_East"
-fout->longitude@_FillValue =  -9999.
+fout->longitude@_FillValue    =  -9999.
 fout->longitude               = fspan( lon_s, lon_e, nlon)
 
 ; _________________ 2D ___________________
@@ -154,7 +173,7 @@ end do
 fout->iveg@long_name     = "CSIRO classification of veg type"
 fout->iveg@_FillValue    = -1
 
-fout->landsea@units         = "0:land, 1:sea";
+fout->landsea@units      = "0:land, 1:sea";
 fout->landsea@_FillValue = -9999.
 
 fout->Albedo@long_name = "unknown sources" ;CSIRO std "ISLSCP2 snow-free bareground albedo";
