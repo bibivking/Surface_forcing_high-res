@@ -451,47 +451,48 @@ do var_num = 0,dimsizes(var_name_2D)-1
     finout->$var_name_2D(var_num)$@_FillValue = -9999.
 end do
 
-finout->rhosoil = (rhosoil_vec(0,:,:)*0.011 + rhosoil_vec(1,:,:)*0.051 \
-                  + rhosoil_vec(2,:,:)*0.157 + rhosoil_vec(3,:,:)*0.4385 \
-                  + rhosoil_vec(4,:,:)*1.1855 + rhosoil_vec(5,:,:)*3.164)/4.6
-finout->sand    = (sand_vec(0,:,:)*0.011 + sand_vec(1,:,:)*0.051 \
-                  + sand_vec(2,:,:)*0.157 + sand_vec(3,:,:)*0.4385 \
-                  + sand_vec(4,:,:)*1.1855 + sand_vec(5,:,:)*3.164)/4.6
-finout->clay    = (clay_vec(0,:,:)*0.011 + clay_vec(1,:,:)*0.051 \
-                  + clay_vec(2,:,:)*0.157 + clay_vec(3,:,:)*0.4385 \
-                  + clay_vec(4,:,:)*1.1855 + clay_vec(5,:,:)*3.164)/4.6
-finout->silt    = (silt_vec(0,:,:)*0.011 + silt_vec(1,:,:)*0.051 \
-                  + silt_vec(2,:,:)*0.157 + silt_vec(3,:,:)*0.4385 \
-                  + silt_vec(4,:,:)*1.1855 + silt_vec(5,:,:)*3.164)/4.6
-finout->organic = (org_vec(0,:,:)*0.011 + org_vec(1,:,:)*0.051 \
-                  + org_vec(2,:,:)*0.157 + org_vec(3,:,:)*0.4385 \
-                  + org_vec(4,:,:)*1.1855 + org_vec(5,:,:)*3.164)/4.6
-finout->hyds    = (hyds_vec(0,:,:)*0.011 + hyds_vec(1,:,:)*0.051 \
-                  + hyds_vec(2,:,:)*0.157 + hyds_vec(3,:,:)*0.4385 \
-                  + hyds_vec(4,:,:)*1.1855 + hyds_vec(5,:,:)*3.164)/4.6\
+
+finout->rhosoil = (rhosoil_vec(0,:,:)*0.022 + rhosoil_vec(1,:,:)*0.058 \
+                  + rhosoil_vec(2,:,:)*0.154 + rhosoil_vec(3,:,:)*0.409 \
+                  + rhosoil_vec(4,:,:)*1.085 + rhosoil_vec(5,:,:)*2.872)/4.6
+finout->sand    = (sand_vec(0,:,:)*0.022 + sand_vec(1,:,:)*0.058 \
+                  + sand_vec(2,:,:)*0.154 + sand_vec(3,:,:)*0.409 \
+                  + sand_vec(4,:,:)*1.085 + sand_vec(5,:,:)*2.872)/4.6
+finout->clay    = (clay_vec(0,:,:)*0.022 + clay_vec(1,:,:)*0.058 \
+                  + clay_vec(2,:,:)*0.154 + clay_vec(3,:,:)*0.409 \
+                  + clay_vec(4,:,:)*1.085 + clay_vec(5,:,:)*2.872)/4.6
+finout->silt    = (silt_vec(0,:,:)*0.022 + silt_vec(1,:,:)*0.058 \
+                  + silt_vec(2,:,:)*0.154 + silt_vec(3,:,:)*0.409 \
+                  + silt_vec(4,:,:)*1.085 + silt_vec(5,:,:)*2.872)/4.6
+finout->organic = (org_vec(0,:,:)*0.022 + org_vec(1,:,:)*0.058 \
+                  + org_vec(2,:,:)*0.154 + org_vec(3,:,:)*0.409 \
+                  + org_vec(4,:,:)*1.085 + org_vec(5,:,:)*2.872)/4.6
+finout->hyds    = (hyds_vec(0,:,:)*0.022 + hyds_vec(1,:,:)*0.058 \
+                  + hyds_vec(2,:,:)*0.154 + hyds_vec(3,:,:)*0.409 \
+                  + hyds_vec(4,:,:)*1.085 + hyds_vec(5,:,:)*2.872)/4.6\
                   /1000.
-finout->bch     = (bch_vec(0,:,:)*0.011 + bch_vec(1,:,:)*0.051 \
-                  + bch_vec(2,:,:)*0.157 + bch_vec(3,:,:)*0.4385 \
-                  + bch_vec(4,:,:)*1.1855 + bch_vec(5,:,:)*3.164)/4.6
-finout->sucs    = (sucs_vec(0,:,:)*0.011 + sucs_vec(1,:,:)*0.051 \
-                  + sucs_vec(2,:,:)*0.157 + sucs_vec(3,:,:)*0.4385 \
-                  + sucs_vec(4,:,:)*1.1855 + sucs_vec(5,:,:)*3.164)/4.6\
+finout->bch     = (bch_vec(0,:,:)*0.022 + bch_vec(1,:,:)*0.058 \
+                  + bch_vec(2,:,:)*0.154 + bch_vec(3,:,:)*0.409 \
+                  + bch_vec(4,:,:)*1.085 + bch_vec(5,:,:)*2.872)/4.6
+finout->sucs    = (sucs_vec(0,:,:)*0.022 + sucs_vec(1,:,:)*0.058 \
+                  + sucs_vec(2,:,:)*0.154 + sucs_vec(3,:,:)*0.409 \
+                  + sucs_vec(4,:,:)*1.085 + sucs_vec(5,:,:)*2.872)/4.6\
                   *(-1.0)/1000. ; sucs should be positive value?? or negetive value?
-finout->ssat    = (ssat_vec(0,:,:)*0.011 + ssat_vec(1,:,:)*0.051 \
-                  + ssat_vec(2,:,:)*0.157 + ssat_vec(3,:,:)*0.4385 \
-                  + ssat_vec(4,:,:)*1.1855 + ssat_vec(5,:,:)*3.164)/4.6
-finout->swilt   = (swilt_vec(0,:,:)*0.011 + swilt_vec(1,:,:)*0.051 \
-                  + swilt_vec(2,:,:)*0.157 + swilt_vec(3,:,:)*0.4385 \
-                  + swilt_vec(4,:,:)*1.1855 + swilt_vec(5,:,:)*3.164)/4.6
-finout->sfc     = (sfc_vec(0,:,:)*0.011 + sfc_vec(1,:,:)*0.051 \
-                  + sfc_vec(2,:,:)*0.157 + sfc_vec(3,:,:)*0.4385 \
-                  + sfc_vec(4,:,:)*1.1855 + sfc_vec(5,:,:)*3.164)/4.6
-finout->css     = (css_vec(0,:,:)*0.011 + css_vec(1,:,:)*0.051 \
-                  + css_vec(2,:,:)*0.157 + css_vec(3,:,:)*0.4385 \
-                  + css_vec(4,:,:)*1.1855 + css_vec(5,:,:)*3.164)/4.6
-finout->cnsd    = (cnsd_vec(0,:,:)*0.011 + cnsd_vec(1,:,:)*0.051 \
-                  + cnsd_vec(2,:,:)*0.157 + cnsd_vec(3,:,:)*0.4385 \
-                  + cnsd_vec(4,:,:)*1.1855 + cnsd_vec(5,:,:)*3.164)/4.6
+finout->ssat    = (ssat_vec(0,:,:)*0.022 + ssat_vec(1,:,:)*0.058 \
+                  + ssat_vec(2,:,:)*0.154 + ssat_vec(3,:,:)*0.409 \
+                  + ssat_vec(4,:,:)*1.085 + ssat_vec(5,:,:)*2.872)/4.6
+finout->swilt   = (swilt_vec(0,:,:)*0.022 + swilt_vec(1,:,:)*0.058 \
+                  + swilt_vec(2,:,:)*0.154 + swilt_vec(3,:,:)*0.409 \
+                  + swilt_vec(4,:,:)*1.085 + swilt_vec(5,:,:)*2.872)/4.6
+finout->sfc     = (sfc_vec(0,:,:)*0.022 + sfc_vec(1,:,:)*0.058 \
+                  + sfc_vec(2,:,:)*0.154 + sfc_vec(3,:,:)*0.409 \
+                  + sfc_vec(4,:,:)*1.085 + sfc_vec(5,:,:)*2.872)/4.6
+finout->css     = (css_vec(0,:,:)*0.022 + css_vec(1,:,:)*0.058 \
+                  + css_vec(2,:,:)*0.154 + css_vec(3,:,:)*0.409 \
+                  + css_vec(4,:,:)*1.085 + css_vec(5,:,:)*2.872)/4.6
+finout->cnsd    = (cnsd_vec(0,:,:)*0.022 + cnsd_vec(1,:,:)*0.058 \
+                  + cnsd_vec(2,:,:)*0.154 + cnsd_vec(3,:,:)*0.409 \
+                  + cnsd_vec(4,:,:)*1.085 + cnsd_vec(5,:,:)*2.872)/4.6
 
 delete(rhosoil_vec)
 delete(sand_vec)
