@@ -1,1000 +1,0 @@
- Copyright (C) 1995-2017 - All Rights Reserved
- University Corporation for Atmospheric Research
- NCAR Command Language Version 6.4.0
- The use of this software is governed by a License Agreement.
- See http://www.ncl.ucar.edu/ for more details.
-fatal:syntax error: line 1 in file tranform_OpenLandMap_to_netcdf.py before or near # 
-#
-^
-
-fatal:error in statement
-fatal:syntax error: line 3 in file tranform_OpenLandMap_to_netcdf.py before or near " 
-""
--^
-
-fatal:error in statement
-fatal:syntax error: line 4 in file tranform_OpenLandMap_to_netcdf.py before or near soil 
-Raw soil
--------^
-
-fatal:error in statement
-fatal:syntax error: line 6 in file tranform_OpenLandMap_to_netcdf.py before or near : 
-http:
-----^
-
-fatal:error in statement
-fatal:syntax error: line 8 in file tranform_OpenLandMap_to_netcdf.py before or near are 
-We are
------^
-
-fatal:error in statement
-fatal:syntax error: line 9 in file tranform_OpenLandMap_to_netcdf.py before or near ( 
-(
-^
-
-fatal:error in statement
-fatal:syntax error: line 11 in file tranform_OpenLandMap_to_netcdf.py before or near are 
-We are
------^
-
-fatal:error in statement
-fatal:syntax error: line 12 in file tranform_OpenLandMap_to_netcdf.py before or near nearest 
-a nearest
---------^
-
-fatal:error in statement
-fatal:syntax error: line 14 in file tranform_OpenLandMap_to_netcdf.py before or near we 
-After we
--------^
-
-fatal:error in statement
-fatal:syntax error: line 15 in file tranform_OpenLandMap_to_netcdf.py before or near - 
-re-
---^
-
-fatal:error in statement
-fatal:syntax error: line 17 in file tranform_OpenLandMap_to_netcdf.py before or near the 
-By the
------^
-
-fatal:error in statement
-fatal:syntax error: line 18 in file tranform_OpenLandMap_to_netcdf.py before or near " 
-""
--^
-
-fatal:error in statement
-fatal:syntax error: line 20 in file tranform_OpenLandMap_to_netcdf.py before or near os 
-import os
---------^
-
-fatal:error in statement
-fatal:syntax error: line 21 in file tranform_OpenLandMap_to_netcdf.py before or near sys 
-import sys
----------^
-
-fatal:error in statement
-fatal:syntax error: line 22 in file tranform_OpenLandMap_to_netcdf.py before or near glob 
-import glob
-----------^
-
-fatal:error in statement
-fatal:syntax error: line 23 in file tranform_OpenLandMap_to_netcdf.py before or near gdal 
-import gdal
-----------^
-
-fatal:error in statement
-fatal:syntax error: line 24 in file tranform_OpenLandMap_to_netcdf.py before or near numpy 
-import numpy
------------^
-
-fatal:error in statement
-fatal:syntax error: line 25 in file tranform_OpenLandMap_to_netcdf.py before or near matplotlib 
-import matplotlib
-----------------^
-
-fatal:error in statement
-fatal:syntax error: line 26 in file tranform_OpenLandMap_to_netcdf.py before or near matplotlib 
-import matplotlib
-----------------^
-
-fatal:error in statement
-fatal:syntax error: line 27 in file tranform_OpenLandMap_to_netcdf.py before or near netCDF4 
-import netCDF4
--------------^
-
-fatal:error in statement
-fatal:syntax error: line 28 in file tranform_OpenLandMap_to_netcdf.py before or near datetime 
-import datetime
---------------^
-
-fatal:error in statement
-fatal:syntax error: line 29 in file tranform_OpenLandMap_to_netcdf.py before or near pandas 
-import pandas
-------------^
-
-fatal:error in statement
-fatal:syntax error: line 31 in file tranform_OpenLandMap_to_netcdf.py before or near main 
-def main
--------^
-
-fatal:error in statement
-fatal:syntax error: line 33 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    ds = gdal.
--------------^
-
-fatal:syntax error: line 34 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    rb = ds.
------------^
-
-fatal:syntax error: line 35 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    var = rb.
-------------^
-
-fatal:syntax error: line 37 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    transf = ds.
----------------^
-
-fatal:syntax error: line 38 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    cols = ds.
--------------^
-
-fatal:syntax error: line 39 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    rows = ds.
--------------^
-
-fatal:syntax error: line 41 in file tranform_OpenLandMap_to_netcdf.py before or near # 
-    #
-----^
-
-fatal:error in statement
-fatal:syntax error: line 42 in file tranform_OpenLandMap_to_netcdf.py before or near # 
-    #
-----^
-
-fatal:error in statement
-fatal:syntax error: line 43 in file tranform_OpenLandMap_to_netcdf.py before or near # 
-    #
-----^
-
-fatal:error in statement
-fatal:Variable (transf) is undefined
-fatal:["Execute.c":8640]:Execute: Error occurred at or near line 44 in file tranform_OpenLandMap_to_netcdf.py
-
-fatal:syntax error: line 45 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    lon = np.
-------------^
-
-fatal:syntax error: line 46 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    lat = np.
-------------^
-
-fatal:Variable (lon) is undefined
-fatal:["Execute.c":8640]:Execute: Error occurred at or near line 48 in file tranform_OpenLandMap_to_netcdf.py
-
-fatal:Variable (lat) is undefined
-fatal:["Execute.c":8640]:Execute: Error occurred at or near line 49 in file tranform_OpenLandMap_to_netcdf.py
-
-fatal:syntax error: line 50 in file tranform_OpenLandMap_to_netcdf.py before or near # 
-    #
-----^
-
-fatal:error in statement
-fatal:syntax error: line 51 in file tranform_OpenLandMap_to_netcdf.py before or near \n 
-    interpolate_to_netcdf(fld , var , lat, lon , level , unit , long_name , description)
-----------------------------------------------------------------------------------------^
-
-fatal:syntax error: possibly an undefined procedure
-fatal:["Execute.c":7765]:None is undefined
-fatal:["Execute.c":8640]:Execute: Error occurred at or near line 53 in file tranform_OpenLandMap_to_netcdf.py
-
-fatal:syntax error: line 56 in file tranform_OpenLandMap_to_netcdf.py before or near interpolate_to_netcdf 
-def interpolate_to_netcdf
-------------------------^
-
-fatal:error in statement
-fatal:syntax error: line 58 in file tranform_OpenLandMap_to_netcdf.py before or near ' 
-    '
-----^
-
-fatal:error in statement
-fatal:syntax error: line 59 in file tranform_OpenLandMap_to_netcdf.py before or near and 
-    lat and
-----------^
-
-fatal:error in statement
-fatal:syntax error: line 60 in file tranform_OpenLandMap_to_netcdf.py before or near is 
-    lat is
----------^
-
-fatal:error in statement
-fatal:syntax error: line 61 in file tranform_OpenLandMap_to_netcdf.py before or near is 
-    lon is
----------^
-
-fatal:error in statement
-fatal:syntax error: line 62 in file tranform_OpenLandMap_to_netcdf.py before or near ' 
-    '
-----^
-
-fatal:error in statement
-fatal:syntax error: line 64 in file tranform_OpenLandMap_to_netcdf.py before or near .8639 
-    lat_s = 8600    # No.8639
-----------------------------^
-
-fatal:syntax error: line 65 in file tranform_OpenLandMap_to_netcdf.py before or near .24959 
-    lat_e = 25000   # No.24959
------------------------------^
-
-fatal:syntax error: line 66 in file tranform_OpenLandMap_to_netcdf.py before or near .140160 
-    lon_s = 140000  # No.140160
-------------------------------^
-
-fatal:syntax error: line 67 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    lon_e = 161000  # No.
-------------------------^
-
-fatal:syntax error: line 70 in file tranform_OpenLandMap_to_netcdf.py before or near # 
-    #
-----^
-
-fatal:error in statement
-fatal:syntax error: line 71 in file tranform_OpenLandMap_to_netcdf.py before or near , 
-    out_fname = "%s_%scm_OpenLandMap.nc" %(fld,
-----------------------------------------------^
-
-fatal:syntax error: line 72 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    f = nc.
-----------^
-
-fatal:syntax error: line 73 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    f.
------^
-
-fatal:error in statement
-fatal:syntax error: line 74 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    f.
------^
-
-fatal:error in statement
-fatal:syntax error: line 75 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    f.
------^
-
-fatal:error in statement
-fatal:syntax error: line 77 in file tranform_OpenLandMap_to_netcdf.py before or near # 
-    #
-----^
-
-fatal:error in statement
-fatal:syntax error: line 78 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    f.
------^
-
-fatal:error in statement
-fatal:syntax error: line 79 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    f.
------^
-
-fatal:error in statement
-fatal:syntax error: line 80 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    f.
------^
-
-fatal:error in statement
-fatal:syntax error: line 82 in file tranform_OpenLandMap_to_netcdf.py before or near # 
-    #
-----^
-
-fatal:error in statement
-fatal:syntax error: line 83 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    latitude = f.
-----------------^
-
-fatal:syntax error: line 84 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    latitude.
-------------^
-
-fatal:error in statement
-fatal:syntax error: line 86 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    longitude = f.
------------------^
-
-fatal:syntax error: line 87 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    longitude.
--------------^
-
-fatal:error in statement
-fatal:Undefined identifier: (lat) is undefined, can't continue
-fatal:["Execute.c":8640]:Execute: Error occurred at or near line 89 in file tranform_OpenLandMap_to_netcdf.py
-
-fatal:Undefined identifier: (lon) is undefined, can't continue
-fatal:["Execute.c":8640]:Execute: Error occurred at or near line 90 in file tranform_OpenLandMap_to_netcdf.py
-
-fatal:syntax error: line 92 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    Var = f.
------------^
-
-fatal:syntax error: line 93 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    Var.
--------^
-
-fatal:error in statement
-fatal:syntax error: line 94 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    Var.
--------^
-
-fatal:error in statement
-fatal:syntax error: line 95 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    Var.
--------^
-
-fatal:error in statement
-fatal:syntax error: line 96 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    Var.
--------^
-
-fatal:error in statement
-fatal:syntax error: line 97 in file tranform_OpenLandMap_to_netcdf.py before or near , 
-    var_tmp = var[::-1,
-----------------------^
-
-fatal:syntax error: line 98 in file tranform_OpenLandMap_to_netcdf.py before or near , 
-    Var[:,
----------^
-
-fatal:error in statement
-fatal:syntax error: line 99 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-    f.
------^
-
-fatal:error in statement
-fatal:syntax error: line 102 in file tranform_OpenLandMap_to_netcdf.py before or near = 
-if __name__ =
-------------^
-
-fatal:error in statement
-fatal:syntax error: line 104 in file tranform_OpenLandMap_to_netcdf.py before or near ' 
-    pyth    = '
---------------^
-
-fatal:syntax error: line 105 in file tranform_OpenLandMap_to_netcdf.py before or near ' 
-    folder  = ['
----------------^
-
-fatal:syntax error: line 106 in file tranform_OpenLandMap_to_netcdf.py before or near ' 
-    levels  = ['
----------------^
-
-fatal:syntax error: line 108 in file tranform_OpenLandMap_to_netcdf.py before or near level 
-    for level
-------------^
-
-fatal:error in statement
-fatal:Variable (level) is undefined
-fatal:["Execute.c":8640]:Execute: Error occurred at or near line 109 in file tranform_OpenLandMap_to_netcdf.py
-
-fatal:syntax error: line 110 in file tranform_OpenLandMap_to_netcdf.py before or near fld 
-        for fld
---------------^
-
-fatal:error in statement
-fatal:syntax error: line 111 in file tranform_OpenLandMap_to_netcdf.py before or near = 
-            if fld =
--------------------^
-
-fatal:error in statement
-fatal:syntax error: line 115 in file tranform_OpenLandMap_to_netcdf.py before or near , 
-                file_name = "%s/sol_bulkdens.fineearth_usda.4a1h_m_250m_b%s..%scm_1950..2017_v0.2.tif" %(fld,
-------------------------------------------------------------------------------------------------------------^
-
-fatal:syntax error: line 116 in file tranform_OpenLandMap_to_netcdf.py before or near fld 
-            elif fld
--------------------^
-
-fatal:error in statement
-fatal:syntax error: line 120 in file tranform_OpenLandMap_to_netcdf.py before or near , 
-                file_name = "%s/sol_sand.wfraction_usda.3a1a1a_m_250m_b%s..%scm_1950..2017_v0.2.tif" %(fld,
-----------------------------------------------------------------------------------------------------------^
-
-fatal:syntax error: line 121 in file tranform_OpenLandMap_to_netcdf.py before or near fld 
-            elif fld
--------------------^
-
-fatal:error in statement
-fatal:syntax error: line 125 in file tranform_OpenLandMap_to_netcdf.py before or near , 
-                file_name = "%s/sol_clay.wfraction_usda.3a1a1a_m_250m_b%s..%scm_1950..2017_v0.2.tif" %(fld,
-----------------------------------------------------------------------------------------------------------^
-
-fatal:syntax error: line 126 in file tranform_OpenLandMap_to_netcdf.py before or near fld 
-            elif fld
--------------------^
-
-fatal:error in statement
-fatal:syntax error: line 130 in file tranform_OpenLandMap_to_netcdf.py before or near , 
-                file_name = "%s/sol_organic.carbon_usda.6a1c_m_250m_b%s..%scm_1950..2017_v0.2.tif" %(fld,
---------------------------------------------------------------------------------------------------------^
-
-fatal:syntax error: line 132 in file tranform_OpenLandMap_to_netcdf.py before or near . 
-            fn = os.
--------------------^
-
-fatal:syntax error: line 133 in file tranform_OpenLandMap_to_netcdf.py before or near \n 
-            main(fn,fld,level,unit,long_name,description)
----------------------------------------------------------^
-
-fatal:syntax error: possibly an undefined procedure
-input in flex scanner failed
-0
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-10
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-30
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-60
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-100
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-200
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-(-180.0, 0.002083333, 0.0, 87.37, 0.0, -0.002083333)
-[-180.         -179.99791667 -179.99583333 ...  179.9936924   179.99577573
-  179.99785907]
-[-61.9987261  -61.99664277 -61.99455944 ...  87.36583333  87.36791667
-  87.37      ]
-input in flex scanner failed
- Copyright (C) 1995-2017 - All Rights Reserved
- University Corporation for Atmospheric Research
- NCAR Command Language Version 6.4.0
- The use of this software is governed by a License Agreement.
- See http://www.ncl.ucar.edu/ for more details.
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	iveg
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	landsea
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	soil_color
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	Albedo
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	albedo2
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	Sy
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	dtb
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	drainage_density
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	slope
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	slope_std
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	elevation
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	elevation_std
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	permeability
-
-
-Variable: nml_4D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	SoilMoist
-
-
-Variable: nml_4D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	SoilTemp
-(0)	Exit DefineMode
-input in flex scanner failed
- Copyright (C) 1995-2017 - All Rights Reserved
- University Corporation for Atmospheric Research
- NCAR Command Language Version 6.4.0
- The use of this software is governed by a License Agreement.
- See http://www.ncl.ucar.edu/ for more details.
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	iveg
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	landsea
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	soil_color
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	Albedo
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	albedo2
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	Sy
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	dtb
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	drainage_density
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	slope
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	slope_std
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	elevation
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	elevation_std
-
-
-Variable: nml_2D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	permeability
-
-
-Variable: nml_4D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	SoilMoist
-
-
-Variable: nml_4D (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	SoilTemp
-(0)	Exit DefineMode
-input in flex scanner failed
- Copyright (C) 1995-2017 - All Rights Reserved
- University Corporation for Atmospheric Research
- NCAR Command Language Version 6.4.0
- The use of this software is governed by a License Agreement.
- See http://www.ncl.ucar.edu/ for more details.
-
-
-Variable: level_class (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	0
-
-
-Variable: level_class (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	10
-
-
-Variable: level_class (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	30
-
-
-Variable: level_class (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	60
-
-
-Variable: level_class (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	100
-
-
-Variable: level_class (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	200
-(0)	calculating isoil
-input in flex scanner failed
- Copyright (C) 1995-2017 - All Rights Reserved
- University Corporation for Atmospheric Research
- NCAR Command Language Version 6.4.0
- The use of this software is governed by a License Agreement.
- See http://www.ncl.ucar.edu/ for more details.
-
-
-Variable: level_class (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	000-005
-
-
-Variable: level_class (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	005-015
-
-
-Variable: level_class (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	015-030
-
-
-Variable: level_class (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	030-060
-
-
-Variable: level_class (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	060-100
-
-
-Variable: level_class (subsection)
-Type: string
-Total Size: 8 bytes
-            1 values
-Number of Dimensions: 1
-Dimensions and sizes:	[1]
-Coordinates: 
-(0)	100-200
-(0)	calculating isoil
