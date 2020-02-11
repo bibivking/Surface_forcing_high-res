@@ -21,7 +21,7 @@ end setvalues
 begin
 
 ; _________________ option __________________
-  soil_data_type = 0 ; 0: CSIRO, 1: OpenLandMap
+  soil_data_type = 1 ; 0: CSIRO, 1: OpenLandMap
 
 ; ________________ file name ________________
 if soil_data_type .eq. 0 then
@@ -77,10 +77,9 @@ lai = area_hi2lores_Wrap( doubletofloat(LON), doubletofloat(LAT), \
       finout->latitude, False)
 
 ; add attributions
-finout->LAI               = lai*1.
+finout->LAI               = lai(:,:,:)*1.
 finout->LAI@long_name     = "Leaf area index"
 finout->LAI@_FillValue    = -9999. ; set -9999. because no missing value point in gridinfo
-finout->LAI               = lai
 
 delete(lai)
 delete(LON)
@@ -94,7 +93,6 @@ clay_temp    = new((/nsdepth, nlat, nlon/), float)
 silt_temp    = new((/nsdepth, nlat, nlon/), float)
 organic_temp = new((/nsdepth, nlat, nlon/), float)
 mask_temp    = new((/nsdepth, nlat, nlon/), float)
-
 
 rhosoil_vec = new((/nsdepth, nlat, nlon/), float)
 sand_vec    = new((/nsdepth, nlat, nlon/), float)
@@ -426,20 +424,20 @@ do var_num = 0,dimsizes(var_name)-1
     finout->$var_name(var_num)$@_FillValue = -9999.
 end do
 
-finout->rhosoil_vec = rhosoil_vec*1.
-finout->sand_vec    = sand_vec*1.
-finout->clay_vec    = clay_vec*1.
-finout->silt_vec    = silt_vec*1.
-finout->org_vec     = org_vec*1.
-finout->hyds_vec    = hyds_vec*1.
-finout->bch_vec     = bch_vec*1.
-finout->sucs_vec    = sucs_vec*(-1.0)/1000. ; sucs should be positive value?? or negetive value?
-finout->ssat_vec    = ssat_vec*1.
-finout->swilt_vec   = swilt_vec*1.
-finout->sfc_vec     = sfc_vec*1.
-finout->css_vec     = css_vec*1.
-finout->cnsd_vec    = cnsd_vec*1.
-finout->watr        = watr*1.
+finout->rhosoil_vec = rhosoil_vec(:,:,:)*1.
+finout->sand_vec    = sand_vec(:,:,:)*1.
+finout->clay_vec    = clay_vec(:,:,:)*1.
+finout->silt_vec    = silt_vec(:,:,:)*1.
+finout->org_vec     = org_vec(:,:,:)*1.
+finout->hyds_vec    = hyds_vec(:,:,:)*1.
+finout->bch_vec     = bch_vec(:,:,:)*1.
+finout->sucs_vec    = sucs_vec(:,:,:)*(-1.0)/1000. ; sucs should be positive value?? or negetive value?
+finout->ssat_vec    = ssat_vec(:,:,:)*1.
+finout->swilt_vec   = swilt_vec(:,:,:)*1.
+finout->sfc_vec     = sfc_vec(:,:,:)*1.
+finout->css_vec     = css_vec(:,:,:)*1.
+finout->cnsd_vec    = cnsd_vec(:,:,:)*1.
+finout->watr        = watr(:,:,:)*1.
 
 ; ----------------- 2D --------------------
 
@@ -450,7 +448,6 @@ do var_num = 0,dimsizes(var_name_2D)-1
     filevardef(finout, var_name_2D(var_num), "float", (/"latitude", "longitude" /))
     finout->$var_name_2D(var_num)$@_FillValue = -9999.
 end do
-
 
 finout->rhosoil = (rhosoil_vec(0,:,:)*0.022 + rhosoil_vec(1,:,:)*0.058 \
                   + rhosoil_vec(2,:,:)*0.154 + rhosoil_vec(3,:,:)*0.409 \
@@ -535,7 +532,7 @@ isoil = where((clay .ge. 0.41) .and. (sand .lt. 0.43)                        ,3 
 isoil = where((clay .ge. 0.41) .and. (sand .ge. 0.43)                        ,5 ,isoil)
 isoil = where((sand.lt.0) .or. (clay.lt.0) .or. (silt .lt. 0)                ,FV,isoil)
 
-finout->isoil = isoil*1
+finout->isoil = isoil(:,:)*1
 delete(isoil)
 delete(sand)
 delete(clay)
@@ -598,7 +595,7 @@ finout->css@units         = "J/kg/K" ;
 finout->cnsd@long_name    = "Thermal conductivity"
 finout->cnsd@units        = "W/m/K" ;
 
-finout->isoil@long_name     = "Zobler soil type";
-finout->isoil@_FillValue = -9999
+finout->isoil@long_name   = "Zobler soil type";
+finout->isoil@_FillValue  = -9999
 
 end

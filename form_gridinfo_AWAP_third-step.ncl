@@ -19,7 +19,7 @@ end setvalues
 begin
 
 ; _________________ option __________________
-soil_data_type = 0 ; 0: CSIRO, 1: OpenLandMap
+soil_data_type = 1 ; 0: CSIRO, 1: OpenLandMap
 
 ; ________________ file name ________________
 if soil_data_type .eq. 0 then
