@@ -21,7 +21,7 @@ end setvalues
 begin
 
 ; _________________ option __________________
-soil_data_type = 0 ; 0: CSIRO, 1: OpenLandMap
+soil_data_type = 1 ; 0: CSIRO, 1: OpenLandMap
 
 ; ________________ file name ________________
 if soil_data_type .eq. 0 then
@@ -40,90 +40,103 @@ fcpr       = addfile (fname_cpr, "r")     ; open output file
 
 ; _________________________ Check Value ____________________________
 wks = gsn_open_wks("pdf",pic)
-gsn_define_colormap(wks,"WhiteBlueGreenYellowRed")
+gsn_define_colormap(wks,"ViBlGrWhYeOrRe");"WhiteBlueGreenYellowRed")
 res            = True
 res@cnFillMode = "RasterFill"            ; Raster Mode
 res@cnFillOn   = True
 res@cnLinesOn  = False
+res@cnExplicitLabelBarLabelsOn = True   ;?
+res@cnLevelSelectionMode       = "ExplicitLevels"
 
 print("isoil")
 print(finout->isoil@_FillValue)
 print(fcpr->isoil@_FillValue)
 res@tiMainString = "isoil"
 
-tmp = where( finout->isoil*1 .eq. fcpr->isoil*1, \
-             0, -5 )
-tmp1 = where( ismissing(finout->isoil) .and. (.not. ismissing(fcpr->isoil)) , 15, -5)
-tmp2 = where( ( .not. ismissing(finout->isoil)) .and. ismissing(fcpr->isoil) , 15, -5)
+;tmp = where( finout->isoil*1 .eq. fcpr->isoil*1, \
+;             0, -5 )
+;tmp1 = where( ismissing(finout->isoil) .and. (.not. ismissing(fcpr->isoil)) , 15, -5)
+;tmp2 = where( ( .not. ismissing(finout->isoil)) .and. ismissing(fcpr->isoil) , 15, -5)
 
-plot = gsn_csm_contour(wks, tmp, res)
-plot = gsn_csm_contour(wks, tmp1, res)
-plot = gsn_csm_contour(wks, tmp2, res)
+;plot = gsn_csm_contour(wks, tmp, res)
+;plot = gsn_csm_contour(wks, tmp1, res)
+;plot = gsn_csm_contour(wks, tmp2, res)
 
-delete(tmp)
+;delete(tmp)
 
 
 
-; var_name = (/ "LAI", "rhosoil_vec", "sand_vec", "clay_vec", "silt_vec", "org_vec", "bch_vec",\
-;               "sucs_vec", "ssat_vec", "sfc_vec", "swilt_vec", "css_vec", "cnsd_vec", \
-;               "hyds_vec", "watr", "patchfrac", "SnowDepth" /)
-;
-; do var_num = 0,dimsizes(var_name)-1
-;     printVarSummary(finout->$var_name(var_num)$)
-;     print(finout->$var_name(var_num)$@_FillValue)
-;     print(fcpr->$var_name(var_num)$@_FillValue)
-;     res@tiMainString = var_name(var_num)
-;
-;     tmp = where( finout->$var_name(var_num)$*1. .eq. fcpr->$var_name(var_num)$*1., \
-;                  0., -1. )
-;     tmp = where( ismissing(finout->$var_name(var_num)$) .and. tmp .ne. 0., 1., tmp)
-;     tmp = where( ismissing(fcpr->$var_name(var_num)$) .and. tmp .ne. 0., 2., tmp)
-;
-;     plot = gsn_csm_contour(wks, tmp(0,:,:), res)
-;     delete(tmp)
-; end do
-;
-;
-; ; ----------------- 2D --------------------
-;
-; var_name_2D = (/"rhosoil", "sand", "clay", "silt", "organic", "bch",\
-;               "sucs", "ssat", "sfc", "swilt", "css", "cnsd", "hyds", \
-;               "iveg", "landsea", "soil_color", "Albedo", "albedo2",   \
-;               "Sy", "dtb", "drainage_density", "slope", "slope_std",  \
-;               "elevation", "elevation_std", "permeability","isoil"    /)
-;
-; do var_num = 0,dimsizes(var_name_2D)-1
-;     print(var_name_2D(var_num))
-;     print(finout->$var_name_2D(var_num)$@_FillValue)
-;     print(fcpr->$var_name_2D(var_num)$@_FillValue)
-;     res@tiMainString = var_name_2D(var_num)
-;
-;     tmp = where( finout->$var_name_2D(var_num)$*1. .eq. fcpr->$var_name_2D(var_num)$*1., \
-;                  0., -1. )
-;     tmp = where( ismissing(finout->$var_name_2D(var_num)$) .and. tmp .ne. 0., 1., tmp)
-;     tmp = where( ismissing(fcpr->$var_name_2D(var_num)$) .and. tmp .ne. 0., 2., tmp)
-;
-;     plot = gsn_csm_contour(wks, tmp, res)
-;
-;     delete(tmp)
-; end do
-;
-; nml_4D = (/"SoilMoist","SoilTemp"/)
-; do var_num = 0,dimsizes(nml_4D)-1
-;     print(nml_4D(var_num))
-;     print(finout->$nml_4D(var_num)$@_FillValue)
-;     print(fcpr->$nml_4D(var_num)$@_FillValue)
-;     res@tiMainString = nml_4D(var_num)
-;
-;     tmp = where( finout->$nml_4D(var_num)$*1. .eq. fcpr->$nml_4D(var_num)$*1., \
-;                  0., -1. )
-;     tmp = where( ismissing(finout->$nml_4D(var_num)$) .and. tmp .ne. 0., 1., tmp)
-;     tmp = where( ismissing(fcpr->$nml_4D(var_num)$) .and. tmp .ne. 0., 2., tmp)
-;
-;     plot = gsn_csm_contour(wks, tmp(0,0,:,:), res)
-;
-;     delete(tmp)
-;
-; end do
+var_name = (/ "LAI", "rhosoil_vec", "sand_vec", "clay_vec", "silt_vec", "org_vec", "bch_vec",\
+              "sucs_vec", "ssat_vec", "sfc_vec", "swilt_vec", "css_vec", "cnsd_vec", \
+              "hyds_vec", "watr", "SnowDepth" /) ;"patchfrac",
+
+do var_num = 0,dimsizes(var_name)-1
+  do level = 0,5
+    printVarSummary(finout->$var_name(var_num)$)
+    print(finout->$var_name(var_num)$@_FillValue)
+    print(fcpr->$var_name(var_num)$@_FillValue)
+    res@tiMainString = var_name(var_num) + " level " + level
+
+    ;tmp = where( finout->$var_name(var_num)$*1. .eq. fcpr->$var_name(var_num)$*1., \
+    ;             0., -1. )
+    ;tmp = where( ismissing(finout->$var_name(var_num)$) .and. tmp .ne. 0., 1., tmp)
+    ;tmp = where( ismissing(fcpr->$var_name(var_num)$) .and. tmp .ne. 0., 2., tmp)
+    res@cnLevels = (/-100.,-10.,-1.,-0.1,-0.01,-0.001,0,0.001,0.01,0.1,1.,10.,100./)
+    plot = gsn_csm_contour(wks, finout->$var_name(var_num)$(level,:,:) -\
+           fcpr->$var_name(var_num)$(level,:,:), res)
+  end do
+end do
+
+
+; ----------------- 2D --------------------
+
+var_name_2D = (/"rhosoil", "sand", "clay", "silt", "organic", "bch",\
+              "sucs", "ssat", "sfc", "swilt", "css", "cnsd", "hyds", \
+              "iveg", "landsea", "soil_color", "Albedo", "albedo2",   \
+              "Sy", "dtb", "drainage_density", "slope", "slope_std",  \
+              "elevation", "elevation_std", "permeability","isoil"    /)
+
+do var_num = 0,dimsizes(var_name_2D)-1
+    print(var_name_2D(var_num))
+    print(finout->$var_name_2D(var_num)$@_FillValue)
+    print(fcpr->$var_name_2D(var_num)$@_FillValue)
+    res@tiMainString = var_name_2D(var_num)
+
+;    tmp = where( finout->$var_name_2D(var_num)$*1. .eq. fcpr->$var_name_2D(var_num)$*1., \
+;                 0., -1. )
+;    tmp = where( ismissing(finout->$var_name_2D(var_num)$) .and. tmp .ne. 0., 1., tmp)
+;    tmp = where( ismissing(fcpr->$var_name_2D(var_num)$) .and. tmp .ne. 0., 2., tmp)
+
+;    plot = gsn_csm_contour(wks, tmp, res)
+
+    res@cnLevels = (/-100.,-10.,-1.,-0.1,-0.01,-0.001,0,0.001,0.01,0.1,1.,10.,100./)
+    plot = gsn_csm_contour(wks, finout->$var_name_2D(var_num)$(:,:) -\
+           fcpr->$var_name_2D(var_num)$(:,:), res)
+
+;    delete(tmp)
+end do
+
+nml_4D = (/"SoilMoist","SoilTemp"/)
+do var_num = 0,dimsizes(nml_4D)-1
+  do time = 0,11
+    do level = 0,5
+        print(nml_4D(var_num))
+        print(finout->$nml_4D(var_num)$@_FillValue)
+        print(min(finout->$nml_4D(var_num)$))
+        print(max(finout->$nml_4D(var_num)$))
+        print(fcpr->$nml_4D(var_num)$@_FillValue)
+        res@cnLevels = (/-100.,-10.,-1.,-0.1,-0.01,-0.001,0,0.001,0.01,0.1,1.,10.,100./)
+        res@tiMainString = nml_4D(var_num)+ " time "+time+" level "+level
+
+        ;tmp = where( finout->$nml_4D(var_num)$*1. .eq. fcpr->$nml_4D(var_num)$*1., \
+        ;             0., -1. )
+        ;tmp = where( ismissing(finout->$nml_4D(var_num)$) .and. tmp .ne. 0., 1., tmp)
+        ;tmp = where( ismissing(fcpr->$nml_4D(var_num)$) .and. tmp .ne. 0., 2., tmp)
+
+        plot = gsn_csm_contour(wks, finout->$nml_4D(var_num)$(time,level,:,:) -\
+               fcpr->$nml_4D(var_num)$(time,level,:,:), res)
+    end do
+  end do
+end do
 
 end

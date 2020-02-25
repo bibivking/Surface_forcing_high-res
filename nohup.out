@@ -1,5 +1,0 @@
-0
-Traceback (most recent call last):
-  File "./transform_OpenLandMap_to_netcdf.py", line 129, in <module>
-    main(fn,fld,level,unit,long_name,description)
-NameError: name 'description' is not defined
