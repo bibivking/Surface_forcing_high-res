@@ -18,17 +18,30 @@ end setvalues
 begin
 
 ; _________________ option __________________
-  soil_data_type = 0 ; 0: CSIRO, 1: OpenLandMap
+  soil_data_type = 1 ; 0: CSIRO, 1: OpenLandMap
+  new_iveg       = True ; new iveg only for SE Australia
 
 ; ________________ file name ________________
 if soil_data_type .eq. 0 then
+  if new_iveg then
+    fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT_new_iveg.nc"
+    system("/bin/rm -f " + fname_out)    ; remove if exists
+    fout  = addfile (fname_out, "c")     ; open output file
+  else
     fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT.nc"
     system("/bin/rm -f " + fname_out)    ; remove if exists
     fout  = addfile (fname_out, "c")     ; open output file
+  end if
 else if soil_data_type .eq. 1 then
+  if new_iveg then
+    fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_new_iveg.nc"
+    system("/bin/rm -f " + fname_out)    ; remove if exists
+    fout  = addfile (fname_out, "c")     ; open output file
+  else
     fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap.nc"
     system("/bin/rm -f " + fname_out)    ; remove if exists
     fout  = addfile (fname_out, "c")     ; open output file
+  end if
 end if
 end if
 
@@ -44,6 +57,11 @@ felev      = addfile (fname_elev,"r")
 fname_std  = "/srv/ccrc/data45/z3509830/CABLE_runs/CABLE_site_runs/CABLE_AUX-dev/offline/gridinfo_CSIRO_1x1.nc"
                  ;lat from + to - lon from -180 to 180
 fstd       = addfile (fname_std,"r")
+
+if new_iveg then
+    fname_iveg = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/nc_file/SE_aus_veg_types_AWAP_grid.nc"
+    fiveg      = addfile (fname_iveg,"r")
+end if
 
 ; _________________ set range of lat and lon ______________________
 lat_s = -44.
@@ -135,19 +153,59 @@ filevardef( fout, "elevation_std", "float", (/ "latitude", "longitude" /))
 filevardef( fout, "permeability", "float", (/ "latitude", "longitude" /))
 ;filevardef( fout, "permeability_std", "float", (/ "latitude", "longitude" /)) ; this var is not used by CABLE
 
+
+; iveg
+
+if new_iveg then
+
+    var   = new((/nlat,nlon/),  "integer")
+    var!0 = "latitude"
+    var!1 = "longitude"
+    var&latitude  = fspan( lat_s, lat_e, nlat)
+    var&longitude = fspan( lon_s, lon_e, nlon)
+
+    var = floattointeger(fiveg->iveg({lat_s:lat_e},{lon_s:lon_e}))
+    printVarSummary(var)
+    fout->iveg = var(:,:)*1
+    printVarSummary(fout->iveg)
+    delete(var)
+
+else
+
+    var   = new((/nlat,nlon/),  "integer")
+    var!0 = "latitude"
+    var!1 = "longitude"
+    var&latitude  = fspan( lat_s, lat_e, nlat)
+    var&longitude = fspan( lon_s, lon_e, nlon)
+    do x = lat_s+0.25,lat_e-0.25,0.5
+       do y = lon_s+0.25,lon_e-0.25,0.5
+         if var_num .eq. 0 then
+            var({x-0.25:x+0.25},{y-0.25:y+0.25}) = floattointeger(fgrid->iveg({x},{y}))
+         else if var_num .le. 4 then
+            var({x-0.25:x+0.25},{y-0.25:y+0.25}) = fgrid->iveg({x},{y})
+         else
+            var({x-0.25:x+0.25},{y-0.25:y+0.25}) = felev->iveg({x},{y})
+         end if
+         end if
+       end do
+    end do
+    fout->iveg = var*1
+    delete(var)
+
+end if
+
+
+
 nml_2D = (/\
-    "iveg", "landsea", "soil_color", "Albedo", "albedo2",   \
+    "landsea", "soil_color", "Albedo", "albedo2",   \
     "Sy", "dtb", "drainage_density", "slope", "slope_std",  \
     "elevation", "elevation_std", "permeability"            \
     /)
 
 do var_num = 0, dimsizes(nml_2D)-1
    print(nml_2D(var_num))
-   if var_num .eq. 0 then
-      var   = new((/nlat,nlon/),  "integer")
-   else
-      var   = new((/nlat,nlon/),  "float")
-   end if
+   var   = new((/nlat,nlon/),  "float")
+
    var!0 = "latitude"
    var!1 = "longitude"
    var&latitude  = fspan( lat_s, lat_e, nlat)
