@@ -1,0 +1,192 @@
+input in flex scanner failed
+ Copyright (C) 1995-2019 - All Rights Reserved
+ University Corporation for Atmospheric Research
+ NCAR Command Language Version 6.6.2
+ The use of this software is governed by a License Agreement.
+ See http://www.ncl.ucar.edu/ for more details.
+
+Variable: var
+Type: integer
+Total Size: 2290884 bytes
+            572721 values
+Number of Dimensions: 2
+Dimensions and sizes:	[latitude | 681] x [longitude | 841]
+Coordinates: 
+            latitude: [-44..-10]
+            longitude: [112..154]
+Number Of Attributes: 1
+  _FillValue :	-2147483647
+
+Variable: iveg (file variable)
+Type: integer
+Total Size: 2290884 bytes
+            572721 values
+Number of Dimensions: 2
+Dimensions and sizes:	[latitude | 681] x [longitude | 841]
+Coordinates: 
+            latitude: [-44..-10]
+            longitude: [112..154]
+Number Of Attributes: 1
+  _FillValue :	-2147483647
+
+
+Variable: nml_2D (subsection)
+Type: string
+Total Size: 8 bytes
+            1 values
+Number of Dimensions: 1
+Dimensions and sizes:	[1]
+Coordinates: 
+(0)	landsea
+
+
+Variable: nml_2D (subsection)
+Type: string
+Total Size: 8 bytes
+            1 values
+Number of Dimensions: 1
+Dimensions and sizes:	[1]
+Coordinates: 
+(0)	soil_color
+
+
+Variable: nml_2D (subsection)
+Type: string
+Total Size: 8 bytes
+            1 values
+Number of Dimensions: 1
+Dimensions and sizes:	[1]
+Coordinates: 
+(0)	Albedo
+
+
+Variable: nml_2D (subsection)
+Type: string
+Total Size: 8 bytes
+            1 values
+Number of Dimensions: 1
+Dimensions and sizes:	[1]
+Coordinates: 
+(0)	albedo2
+
+
+Variable: nml_2D (subsection)
+Type: string
+Total Size: 8 bytes
+            1 values
+Number of Dimensions: 1
+Dimensions and sizes:	[1]
+Coordinates: 
+(0)	Sy
+
+
+Variable: nml_2D (subsection)
+Type: string
+Total Size: 8 bytes
+            1 values
+Number of Dimensions: 1
+Dimensions and sizes:	[1]
+Coordinates: 
+(0)	dtb
+
+
+Variable: nml_2D (subsection)
+Type: string
+Total Size: 8 bytes
+            1 values
+Number of Dimensions: 1
+Dimensions and sizes:	[1]
+Coordinates: 
+(0)	drainage_density
+
+
+Variable: nml_2D (subsection)
+Type: string
+Total Size: 8 bytes
+            1 values
+Number of Dimensions: 1
+Dimensions and sizes:	[1]
+Coordinates: 
+(0)	slope
+
+
+Variable: nml_2D (subsection)
+Type: string
+Total Size: 8 bytes
+            1 values
+Number of Dimensions: 1
+Dimensions and sizes:	[1]
+Coordinates: 
+(0)	slope_std
+
+
+Variable: nml_2D (subsection)
+Type: string
+Total Size: 8 bytes
+            1 values
+Number of Dimensions: 1
+Dimensions and sizes:	[1]
+Coordinates: 
+(0)	elevation
+
+
+Variable: nml_2D (subsection)
+Type: string
+Total Size: 8 bytes
+            1 values
+Number of Dimensions: 1
+Dimensions and sizes:	[1]
+Coordinates: 
+(0)	elevation_std
+
+
+Variable: nml_2D (subsection)
+Type: string
+Total Size: 8 bytes
+            1 values
+Number of Dimensions: 1
+Dimensions and sizes:	[1]
+Coordinates: 
+(0)	permeability
+
+
+Variable: nml_4D (subsection)
+Type: string
+Total Size: 8 bytes
+            1 values
+Number of Dimensions: 1
+Dimensions and sizes:	[1]
+Coordinates: 
+(0)	SoilMoist
+
+
+Variable: nml_4D (subsection)
+Type: string
+Total Size: 8 bytes
+            1 values
+Number of Dimensions: 1
+Dimensions and sizes:	[1]
+Coordinates: 
+(0)	SoilTemp
+(0)	Exit DefineMode
+ Copyright (C) 1995-2019 - All Rights Reserved
+ University Corporation for Atmospheric Research
+ NCAR Command Language Version 6.6.2
+ The use of this software is governed by a License Agreement.
+ See http://www.ncl.ucar.edu/ for more details.
+warning:_NclOpenFile: cannot open file </srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_DLCM.nc>; No such file or directory
+
+fatal:["Execute.c":8637]:Execute: Error occurred at or near line 83 in file form_gridinfo_AWAP_second-step.ncl
+
+input in flex scanner failed
+ Copyright (C) 1995-2019 - All Rights Reserved
+ University Corporation for Atmospheric Research
+ NCAR Command Language Version 6.6.2
+ The use of this software is governed by a License Agreement.
+ See http://www.ncl.ucar.edu/ for more details.
+warning:_NclOpenFile: cannot open file </srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_DLCM.nc>; No such file or directory
+
+fatal:file (finout) isn't defined
+fatal:["Execute.c":8637]:Execute: Error occurred at or near line 75 in file form_gridinfo_AWAP_third-step.ncl
+
+input in flex scanner failed

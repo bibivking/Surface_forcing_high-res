@@ -19,19 +19,36 @@ end setvalues
 begin
 
 ; _________________ option __________________
-soil_data_type = 0 ; 0: CSIRO, 1: OpenLandMap
+soil_data_type = 1 ; 0: CSIRO, 1: OpenLandMap
+iveg_type       = "DLCM" ; Dynamic Land Cover Map across Australia
+                 ;"NVIS" ; NVIS iveg only for SE Australia
+                 ;"STD"  ; CABLE standard input
 
 ; ________________ file name ________________
 if soil_data_type .eq. 0 then
+  if iveg_type .eq. "STD" then
     fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT.nc"
-    finout  = addfile(fname_inout, "w")     ; open output file
+    finout  = addfile (fname_inout, "w")     ; open output file
     pic = "check_mask_CSIRO"
     fname_mask   = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT_mask.nc"
+  else
+    fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT_"+iveg_type+".nc"
+    finout  = addfile (fname_inout, "w")     ; open output file
+    pic = "check_mask_CSIRO_"+iveg_type
+    fname_mask   = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT_"+iveg_type+"_mask.nc"
+  end if
 else if soil_data_type .eq. 1 then
+  if iveg_type .eq. "STD" then
     fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap.nc"
-    finout  = addfile(fname_inout, "w")     ; open output file
-    pic = "check_mask_OpenLandMap"
+    finout  = addfile (fname_inout, "w")     ; open output file
+    pic = "check_mask_Openland"
     fname_mask   = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_mask.nc"
+  else
+    fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_"+iveg_type+".nc"
+    finout  = addfile (fname_inout, "w")     ; open output file
+    pic = "check_mask_Openland_"+iveg_type
+    fname_mask   = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_"+iveg_type+"_mask.nc"
+  end if
 end if
 end if
 
@@ -59,6 +76,22 @@ mask_out = finout->landsea
 mask_out = 0.
 
 ; ----------- 2D -----------
+
+do var_num = 0,dimsizes(var_name_2D_int)-1
+
+    res@tiMainString = var_name_2D_int(var_num)
+
+    print(var_name_2D_int(var_num))
+    print(finout->$var_name_2D_int(var_num)$@_FillValue)
+    print(min(finout->$var_name_2D_int(var_num)$))
+    print(max(finout->$var_name_2D_int(var_num)$))
+
+    mask_out = where( ismissing(finout->$var_name_2D_int(var_num)$) , 1., mask_out )
+    ;plot = gsn_csm_contour(wks, mask_out, res)
+
+end do
+
+
 do var_num = 0,dimsizes(var_name_2D)-1
 
     res@tiMainString = var_name_2D(var_num)

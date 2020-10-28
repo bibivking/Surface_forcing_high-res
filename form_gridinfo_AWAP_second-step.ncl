@@ -21,15 +21,33 @@ end setvalues
 begin
 
 ; _________________ option __________________
-  soil_data_type = 0 ; 0: CSIRO, 1: OpenLandMap
+  soil_data_type = 1 ; 0: CSIRO, 1: OpenLandMap
+  iveg_type       = "DLCM" ; Dynamic Land Cover Map across Australia
+                   ;"NVIS" ; NVIS iveg only for SE Australia
+                   ;"STD"  ; CABLE standard input
 
 ; ________________ file name ________________
+
 if soil_data_type .eq. 0 then
-    fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT.nc"
-    finout  = addfile(fname_inout, "w")     ; open output file
+  if iveg_type .eq. "STD" then
+    fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT.nc"
+    system("/bin/rm -f " + fname_out)    ; remove if exists
+    finout  = addfile (fname_out, "w")     ; open output file
+  else
+    fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT_"+iveg_type+".nc"
+    system("/bin/rm -f " + fname_out)    ; remove if exists
+    finout  = addfile (fname_out, "w")     ; open output file
+  end if
 else if soil_data_type .eq. 1 then
-    fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap.nc"
-    finout  = addfile(fname_inout, "w")     ; open output file
+  if iveg_type .eq. "STD" then
+    fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap.nc"
+    system("/bin/rm -f " + fname_out)    ; remove if exists
+    finout  = addfile (fname_out, "w")     ; open output file
+  else
+    fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_"+iveg_type+".nc"
+    system("/bin/rm -f " + fname_out)    ; remove if exists
+    finout  = addfile (fname_out, "w")     ; open output file
+  end if
 end if
 end if
 
@@ -37,8 +55,8 @@ fname_grid = "/srv/ccrc/data45/z3509830/CABLE_runs/CABLE_site_runs/CABLE_AUX-dev
                  ;lat from + to - lon from -180 to 180
 fgrid      = addfile(fname_grid,"r")
 
-;fname_LAI  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/nc_file/lai_climatology_AWAP_grid.nc" ; Gimms
-fname_LAI  = "/srv/ccrc/data04/z3509830/Fluxnet_data/All_flux_sites_processed/Copernicus_LAI_time_series/Aus/monthly_climatology.nc" ; Anna's Copernicus
+;fname_LAI  = "/srv/ccrc/data25/z5218916/LAI_data/lai_climatology_AWAP_grid.nc" ; Gimms
+fname_LAI  = "/srv/ccrc/data25/z5218916/LAI_data/monthly_climatology.nc" ; Anna's Copernicus
 fLAI       = addfile(fname_LAI, "r")
 
 ; _________________ set range of lat and lon ______________________
@@ -391,6 +409,7 @@ do level = 0,5
     psi_tmp(level,:,:) = where( iveg .le. 3, 2550000.0, psi_tmp(level,:,:))
     psi_tmp(level,:,:) = where( iveg .eq. 4, 2240000.0, psi_tmp(level,:,:))
     psi_tmp(level,:,:) = where( iveg .eq. 5, 4280000.0, psi_tmp(level,:,:))
+    psi_tmp(level,:,:) = where( iveg .ge. 18, 2550000.0, psi_tmp(level,:,:))
 
     swilt_vec(level,:,:) = (ssat_vec(level,:,:) - watr(level,:,:)) \
                           * ((psi_tmp(level,:,:)/sucs_vec(level,:,:)) ^ (-1.0/bch_vec(level,:,:)))\

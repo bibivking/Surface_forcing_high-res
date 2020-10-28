@@ -16,15 +16,17 @@ end setvalues
 begin
 
 ; _________________ option __________________
-soil_data_type = 0 ; 0: CSIRO, 1: OpenLandMap
-var_name       = "isoil"
+soil_data_type = 1 ; 0: CSIRO, 1: OpenLandMap
+var_name       = "iveg"
 
 ; ________________ file name ________________
 if soil_data_type .eq. 0 then
     fname_in  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/nc_file/gridinfo_AWAP_CSIRO_AU_NAT.nc"
     fin  = addfile (fname_in, "r")     ; open output file
 else if soil_data_type .eq. 1 then
-    fname_in  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/nc_file/gridinfo_AWAP_OpenLandMap.nc"
+    fname_in  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_new_iveg.nc"
+    ;"/srv/ccrc/data25/z5218916/script/surface_data_for_AWAP/nc_files/MD_elev_orig_std_avg-sand_AWAP_AU_mask.nc"
+    ;"/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/nc_file/gridinfo_AWAP_OpenLandMap.nc"
     fin  = addfile (fname_in, "r")     ; open output file
 end if
 end if
