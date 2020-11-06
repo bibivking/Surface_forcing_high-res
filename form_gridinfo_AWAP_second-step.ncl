@@ -31,21 +31,17 @@ begin
 if soil_data_type .eq. 0 then
   if iveg_type .eq. "STD" then
     fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT.nc"
-    system("/bin/rm -f " + fname_out)    ; remove if exists
     finout  = addfile (fname_out, "w")     ; open output file
   else
     fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT_"+iveg_type+".nc"
-    system("/bin/rm -f " + fname_out)    ; remove if exists
     finout  = addfile (fname_out, "w")     ; open output file
   end if
 else if soil_data_type .eq. 1 then
   if iveg_type .eq. "STD" then
     fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap.nc"
-    system("/bin/rm -f " + fname_out)    ; remove if exists
     finout  = addfile (fname_out, "w")     ; open output file
   else
     fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_"+iveg_type+".nc"
-    system("/bin/rm -f " + fname_out)    ; remove if exists
     finout  = addfile (fname_out, "w")     ; open output file
   end if
 end if
