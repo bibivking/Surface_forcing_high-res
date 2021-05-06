@@ -27,27 +27,27 @@ iveg_type       = "DLCM" ; Dynamic Land Cover Map across Australia
 ; ________________ file name ________________
 if soil_data_type .eq. 0 then
   if iveg_type .eq. "STD" then
-    fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT.nc"
+    fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT_ELEV.nc"
     finout  = addfile (fname_inout, "w")     ; open output file
     pic = "check_mask_CSIRO"
-    fname_mask   = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT_mask.nc"
+    fname_mask   = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT_ELEV_mask.nc"
   else
-    fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT_"+iveg_type+".nc"
+    fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT_ELEV_"+iveg_type+".nc"
     finout  = addfile (fname_inout, "w")     ; open output file
     pic = "check_mask_CSIRO_"+iveg_type
-    fname_mask   = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT_"+iveg_type+"_mask.nc"
+    fname_mask   = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT_ELEV_"+iveg_type+"_mask.nc"
   end if
 else if soil_data_type .eq. 1 then
   if iveg_type .eq. "STD" then
-    fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap.nc"
+    fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_ELEV.nc"
     finout  = addfile (fname_inout, "w")     ; open output file
     pic = "check_mask_Openland"
-    fname_mask   = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_mask.nc"
+    fname_mask   = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_ELEV_mask.nc"
   else
-    fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_"+iveg_type+".nc"
+    fname_inout  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_ELEV_"+iveg_type+".nc"
     finout  = addfile (fname_inout, "w")     ; open output file
     pic = "check_mask_Openland_"+iveg_type
-    fname_mask   = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_"+iveg_type+"_mask.nc"
+    fname_mask   = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_ELEV_"+iveg_type+"_mask.nc"
   end if
 end if
 end if

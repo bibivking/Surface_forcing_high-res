@@ -55,8 +55,8 @@ def main(in_fname, out_fname, openLand=False, csiro_fname=None):
 
 if __name__ == "__main__":
 
-    in_fname  = "gridinfo_AWAP_OpenLandMap_DLCM_mask.nc"
-    out_fname = "SE_AUS_gridinfo_AWAP_OpenLandMap_DLCM_mask.nc"
+    in_fname  = "gridinfo_AWAP_OpenLandMap_ELEV_DLCM_mask.nc"
+    out_fname = "SE_AUS_gridinfo_AWAP_OpenLandMap_ELEV_DLCM_mask.nc"
     main(in_fname, out_fname)
 
     # in_fname = "gridinfo_AWAP_OpenLandMap_DLCM_mask.nc"

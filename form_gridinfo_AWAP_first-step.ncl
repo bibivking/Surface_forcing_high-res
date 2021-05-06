@@ -15,7 +15,9 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/shea_util.ncl"
 ;    converge_grid_elev_std_opt_mask_sand+sand2.ncl
 ;    and AU_gridinfo_AWAP.ncl
 ; 2. 4-Nov-2020
-;   Anna terrain(raster("/srv/ccrc/data45/z3509830/CABLE_runs/Inputs/Elev_data/elev_GTOPO30-1gd4r.nc"), opt="slope", unit="tangent", neighbors=4)
+;    Anna terrain(raster("/srv/ccrc/data45/z3509830/CABLE_runs/Inputs/Elev_data/elev_GTOPO30-1gd4r.nc"), opt="slope", unit="tangent", neighbors=4)
+; 3. 6-May-2021
+;    Fixing three odd pixels along costal in elevation
 ; ______________________________________________________________________________
 
 
@@ -319,22 +321,25 @@ do var_num = 0, dimsizes(nml_2D_ele_slp)-1
     var&longitude = fspan( lon_s, lon_e, nlon)
     if var_num .eq. 0 then
       ; fix the odd stripe at lat: -23.4995 lon: 130.9227-154
-      tmp = felevation->elevation({lat_s-0.05:lat_e+0.05},{lon_s-0.05:lon_e+0.05})
+      ele_tmp = felevation->elevation({lat_s-0.05:lat_e+0.05},{lon_s-0.05:lon_e+0.05})
       ; since elev&slope is in 1km, don't need to include many boundary pixels
-      tmp({-23.4995},{130.9227:154}) = (tmp({-23.5095},{130.9227:154}) + tmp({-23.4895},{130.9227:154}))/2
-      var = linint2(felevation_lon,felevation_lat,tmp,True,var&longitude,var&latitude,0)
+      ele_tmp({-23.4995},{130.9227:154}) = (ele_tmp({-23.5095},{130.9227:154}) + ele_tmp({-23.4895},{130.9227:154}))/2
+      var = linint2(felevation_lon,felevation_lat,ele_tmp,True,var&longitude,var&latitude,0)
     else if var_num .eq. 1 then
       ; fix the odd stripe at lat: -23.4995 lon: 130.9227-154
-      tmp = fslope->slope({lat_s-0.05:lat_e+0.05},{lon_s-0.05:lon_e+0.05})
-      tmp({-23.4995},{130.9227:154}) = (tmp({-23.5095},{130.9227:154}) + tmp({-23.4895},{130.9227:154}))/2
-      var = linint2(fslope_lon,fslope_lat,tmp,True,var&longitude,var&latitude,0)
+      slp_tmp = fslope->slope({lat_s-0.05:lat_e+0.05},{lon_s-0.05:lon_e+0.05})
+      slp_tmp({-23.4895},{130.9227:154}) = (slp_tmp({-23.5195},{130.9227:154}) + slp_tmp({-23.4795},{130.9227:154}))/2
+      slp_tmp({-23.4995},{130.9227:154}) = (slp_tmp({-23.5195},{130.9227:154}) + slp_tmp({-23.4795},{130.9227:154}))/2
+      slp_tmp({-23.5095},{130.9227:154}) = (slp_tmp({-23.5195},{130.9227:154}) + slp_tmp({-23.4795},{130.9227:154}))/2
+      var = linint2(fslope_lon,fslope_lat,slp_tmp,True,var&longitude,var&latitude,0)
     end if
     end if
     fout->$nml_2D_ele_slp(var_num)$ = var*1
-    delete(tmp)
     delete(var)
 end do
 
+; fix odd pixels in elevation @ 2021/5/6
+fout->elevation = where(fout->elevation .gt. 5000, 0, fout->elevation)
 
 ; elevation_std and slope_std
 nml_2D_std = (/ "elevation_std", "slope_std" /)
@@ -348,9 +353,21 @@ do var_num = 0, dimsizes(nml_2D_std)-1
     do x = lat_s,lat_e,0.05
        do y = lon_s,lon_e,0.05
          if var_num .eq. 0 then
-            var({x},{y}) = stddev(felevation->elevation({x-0.025:x+0.025},{y-0.025:y+0.025}))
+            tmp = ele_tmp({x-0.025:x+0.025},{y-0.025:y+0.025})
+            if all(ismissing(tmp)) then
+              var({x},{y}) =  -9999.
+            else
+              var({x},{y}) = stddev(tmp)
+            end if
+            delete(tmp)
          else if var_num .eq. 1 then
-            var({x},{y}) = stddev(fslope->slope({x-0.025:x+0.025},{y-0.025:y+0.025}))
+            tmp = slp_tmp({x-0.025:x+0.025},{y-0.025:y+0.025})
+            if all(ismissing(tmp)) then
+              var({x},{y}) =  -9999.
+            else
+              var({x},{y}) = stddev(tmp)
+            end if
+            delete(tmp)
          end if
          end if
        end do

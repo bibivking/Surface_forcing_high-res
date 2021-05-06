@@ -10,6 +10,9 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/shea_util.ncl"
 ;          read soil texture data,
 ;          calculate soil hydraulic parameters
 ;          form gridinfo data
+; Change History:
+; 1. 6-May-2021
+;    require swilt >= 0.05 to match with the range in cable_check.F90
 ; ______________________________________________________________________________
 
 ;______ From Mark Decker's code ______
@@ -30,18 +33,18 @@ begin
 
 if soil_data_type .eq. 0 then
   if iveg_type .eq. "STD" then
-    fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT.nc"
+    fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT_ELEV.nc"
     finout  = addfile (fname_out, "w")     ; open output file
   else
-    fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT_"+iveg_type+".nc"
+    fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_CSIRO_AU_NAT_ELEV_"+iveg_type+".nc"
     finout  = addfile (fname_out, "w")     ; open output file
   end if
 else if soil_data_type .eq. 1 then
   if iveg_type .eq. "STD" then
-    fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap.nc"
+    fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_ELEV.nc"
     finout  = addfile (fname_out, "w")     ; open output file
   else
-    fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_"+iveg_type+".nc"
+    fname_out  = "/srv/ccrc/data25/z5218916/script/Surface_forcing_high-res/gridinfo_AWAP_OpenLandMap_ELEV_"+iveg_type+".nc"
     finout  = addfile (fname_out, "w")     ; open output file
   end if
 end if
@@ -384,10 +387,13 @@ end if
 ; ________________________________ Mark Decker's equations for elev file ___________________________________
 ; From /g/data1/w35/mrd561/CABLE2_runs/CMIP6-GM2-testing/ssgw_Feb23.2018/opt/surface_data/add_derived_SWC.py
 
+; multivariate equation in Cosby et al 1984
 hyds_vec = (1.0-org_vec) * 0.00706 * ( 10.0 ^ (-0.60 + 1.26*sand_vec - 0.64*clay_vec) ) + org_vec*10^(-4)
 bch_vec  = (1.0-org_vec) * ( 3.1 + 15.7*clay_vec - 0.3*sand_vec ) + org_vec*3.0
 sucs_vec = (1.0-org_vec) * 10.0 * 10.0^( 1.54 - 0.95*sand_vec + 0.63*silt_vec ) + org_vec*10.3
 ssat_vec = (1.0-org_vec) * ( 0.505 - 0.142*sand_vec - 0.037*clay_vec ) + org_vec*0.6
+
+; Mark Decker forgot the source watr equation
 watr     = (1.0-org_vec) * ( 0.02 + 0.018*clay_vec ) + org_vec*0.15
 
 sst_tmp = ssat_vec
@@ -401,20 +407,30 @@ psi_tmp = ssat_vec
 
 do level = 0,5
 
+    ; first, giving the water potiential at wilting point (Pa), taken from Mark's code
     psi_tmp(level,:,:) = 2750000.
     psi_tmp(level,:,:) = where( iveg .le. 3, 2550000.0, psi_tmp(level,:,:))
     psi_tmp(level,:,:) = where( iveg .eq. 4, 2240000.0, psi_tmp(level,:,:))
     psi_tmp(level,:,:) = where( iveg .eq. 5, 4280000.0, psi_tmp(level,:,:))
     psi_tmp(level,:,:) = where( iveg .ge. 18, 2550000.0, psi_tmp(level,:,:))
 
+    ; second, caculating swilt and sfc by Campbell equation
     swilt_vec(level,:,:) = (ssat_vec(level,:,:) - watr(level,:,:)) \
                           * ((psi_tmp(level,:,:)/sucs_vec(level,:,:)) ^ (-1.0/bch_vec(level,:,:)))\
                           + watr(level,:,:)
 end do
 
-;print(swilt_vec)
+; Fix @ 2021/5/6, to match swilt = (/0.05,0.4/) in cable_check.F90
+swilt_vec = where(swilt_vec .lt. 0.05, 0.05, swilt_vec)
+
 
 sfc_vec  = (ssat_vec - watr) * ( 1.157407 * 10^(-06) / hyds_vec) ^ (1.0 / (2.0*bch_vec + 3.0) ) + watr
+
+; ___ Mark's comments in cable_parameters.F90 about css_vec and cnsd_vec __
+;  took avg of results from A New Perspective on Soil Thermal Properties Ochsner, Horton,Tucheng
+;  Soil Sci Soc America 2001
+;  to find what silt (1.0-sand-clay) is !simply regress to his means !in J/kg/K
+
 css_vec  = (1.0-org_vec) * ( 850*(1.0 - sand_vec - clay_vec) + 865.0*clay_vec + 750.0*sand_vec ) + org_vec*950.0
 cnsd_vec = (1.0-org_vec) * ( 0.135*sst_tmp + 0.0239/sst_tmp )  / (1.0 - 0.947*sst_tmp) + org_vec*0.05
 
