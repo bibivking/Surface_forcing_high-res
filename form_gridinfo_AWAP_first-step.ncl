@@ -78,7 +78,7 @@ end if
 ; ============================== Input File Name ===============================
 
 ; ---- Gridinfo and Elev file ----
-fname_grid = "/srv/ccrc/data45/z3509830/CABLE_runs/CABLE_site_runs/CABLE_AUX-dev/offline/CABLE_UNSW_GSWP3_gridinfo_0.5x0.5_site.nc"
+fname_grid = "/srv/ccrc/data25/z5218916/cable/src/CABLE-AUX/offline/CABLE_UNSW_GSWP3_gridinfo_0.5x0.5_site.nc"
                  ;lat from + to - lon from -180 to 180
 fgrid      = addfile (fname_grid,"r")
 
@@ -86,7 +86,7 @@ fname_elev = "/srv/ccrc/data25/z5218916/cable/src/CABLE-AUX/offline/GSWP3_gwmode
                  ;lat from - to + lon from 0 to 360
 felev      = addfile (fname_elev,"r")
 
-fname_std  = "/srv/ccrc/data45/z3509830/CABLE_runs/CABLE_site_runs/CABLE_AUX-dev/offline/gridinfo_CSIRO_1x1.nc"
+fname_std  = "/srv/ccrc/data25/z5218916/cable/src/CABLE-AUX/offline/gridinfo_CSIRO_1x1.nc"
                  ;lat from + to - lon from -180 to 180
 fstd       = addfile (fname_std,"r")
 

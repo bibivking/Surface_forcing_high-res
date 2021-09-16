@@ -50,7 +50,7 @@ else if soil_data_type .eq. 1 then
 end if
 end if
 
-fname_grid = "/srv/ccrc/data45/z3509830/CABLE_runs/CABLE_site_runs/CABLE_AUX-dev/offline/CABLE_UNSW_GSWP3_gridinfo_0.5x0.5_site.nc"
+fname_grid = "/srv/ccrc/data25/z5218916/cable/src/CABLE-AUX/offline/CABLE_UNSW_GSWP3_gridinfo_0.5x0.5_site.nc"
                  ;lat from + to - lon from -180 to 180
 fgrid      = addfile(fname_grid,"r")
 
